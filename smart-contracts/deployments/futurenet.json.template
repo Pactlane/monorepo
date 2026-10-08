@@ -1,8 +1,0 @@
-{
-  "network": "futurenet",
-  "rpc_url": "https://rpc-futurenet.stellar.org",
-  "horizon_url": "https://horizon-futurenet.stellar.org",
-  "deployed_at": null,
-  "contracts": {},
-  "deployment_history": []
-}
