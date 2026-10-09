@@ -1,0 +1,23 @@
+{
+  "name": "@pactlane/example-hello-commerce",
+  "version": "0.0.1",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "start": "bun src/main.ts",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@pactlane/core": "workspace:*",
+    "@pactlane/discovery": "workspace:*",
+    "@pactlane/negotiation": "workspace:*",
+    "@pactlane/sdk": "workspace:*",
+    "@pactlane/storage-0g": "workspace:*",
+    "@pactlane/test-utils": "workspace:*"
+  },
+  "devDependencies": {
+    "@pactlane/config": "workspace:*",
+    "@types/bun": "latest",
+    "typescript": "^6.0.2"
+  }
+}

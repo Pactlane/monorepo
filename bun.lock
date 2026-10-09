@@ -51,6 +51,23 @@
         "vite": "^8",
       },
     },
+    "examples/hello-commerce": {
+      "name": "@pactlane/example-hello-commerce",
+      "version": "0.0.1",
+      "dependencies": {
+        "@pactlane/core": "workspace:*",
+        "@pactlane/discovery": "workspace:*",
+        "@pactlane/negotiation": "workspace:*",
+        "@pactlane/sdk": "workspace:*",
+        "@pactlane/storage-0g": "workspace:*",
+        "@pactlane/test-utils": "workspace:*",
+      },
+      "devDependencies": {
+        "@pactlane/config": "workspace:*",
+        "@types/bun": "latest",
+        "typescript": "^6.0.2",
+      },
+    },
     "packages/config": {
       "name": "@pactlane/config",
       "version": "0.0.1",
@@ -408,6 +425,8 @@
     "@pactlane/discovery": ["@pactlane/discovery@workspace:packages/discovery"],
 
     "@pactlane/evaluation": ["@pactlane/evaluation@workspace:packages/evaluation"],
+
+    "@pactlane/example-hello-commerce": ["@pactlane/example-hello-commerce@workspace:examples/hello-commerce"],
 
     "@pactlane/negotiation": ["@pactlane/negotiation@workspace:packages/negotiation"],
 
