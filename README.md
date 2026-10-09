@@ -32,12 +32,12 @@ Stellar-8004   Signed quotes   Stellar-8183   0G Storage    Evaluator → Soroba
   <img src=".github/assets/home.png" alt="Pactlane landing page" width="100%" />
 </p>
 
-| Explore agents | Agent profile |
-|---|---|
+| Explore agents                                                | Agent profile                                              |
+| ------------------------------------------------------------- | ---------------------------------------------------------- |
 | <img src=".github/assets/explore.png" alt="Explore agents" /> | <img src=".github/assets/agent.png" alt="Agent profile" /> |
 
-| Job detail | Mobile |
-|---|---|
+| Job detail                                                     | Mobile                                                                |
+| -------------------------------------------------------------- | --------------------------------------------------------------------- |
 | <img src=".github/assets/job.png" alt="Job detail timeline" /> | <img src=".github/assets/mobile.png" alt="Mobile hero" width="280" /> |
 
 ## Run the project

@@ -1,6 +1,12 @@
 import { describe, expect, test } from "bun:test"
 import { NETWORKS, sha256Ref } from "@pactlane/core"
-import { BASE_TIME, COMMERCE_CONTRACT_ID, fixtureIdentity, judge, marketReportTask } from "@pactlane/test-utils"
+import {
+  BASE_TIME,
+  COMMERCE_CONTRACT_ID,
+  fixtureIdentity,
+  judge,
+  marketReportTask,
+} from "@pactlane/test-utils"
 import { evaluateDeliverable } from "./bundle"
 import { evaluateContent } from "./rubric"
 
@@ -25,13 +31,22 @@ const base = (content: string) => {
 }
 
 describe("rubric", () => {
-  test("pass", () => expect(evaluateContent(marketReportTask, good).verdict).toBe("pass"))
+  test("pass", () =>
+    expect(evaluateContent(marketReportTask, good).verdict).toBe("pass"))
   test("fail on missing section", () => {
-    const res = evaluateContent(marketReportTask, good.replace("## Risks", "## Other"))
+    const res = evaluateContent(
+      marketReportTask,
+      good.replace("## Risks", "## Other")
+    )
     expect(res.verdict).toBe("fail")
-    expect(res.checks.find((c) => c.kind === "required_sections")?.detail).toContain("Risks")
+    expect(
+      res.checks.find((c) => c.kind === "required_sections")?.detail
+    ).toContain("Risks")
   })
-  test("needs_review on empty output", () => expect(evaluateContent(marketReportTask, "  ").verdict).toBe("needs_review"))
+  test("needs_review on empty output", () =>
+    expect(evaluateContent(marketReportTask, "  ").verdict).toBe(
+      "needs_review"
+    ))
 })
 
 describe("evaluateDeliverable", () => {
@@ -49,7 +64,11 @@ describe("evaluateDeliverable", () => {
   })
 
   test("rejects provider self-evaluation and late evaluation", () => {
-    expect(() => evaluateDeliverable({ ...base(good), evaluatorAddress: scout.address })).toThrow(/provider/)
-    expect(() => evaluateDeliverable({ ...base(good), nowUnix: BASE_TIME + 101 })).toThrow(/deadline/)
+    expect(() =>
+      evaluateDeliverable({ ...base(good), evaluatorAddress: scout.address })
+    ).toThrow(/provider/)
+    expect(() =>
+      evaluateDeliverable({ ...base(good), nowUnix: BASE_TIME + 101 })
+    ).toThrow(/deadline/)
   })
 })

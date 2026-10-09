@@ -15,7 +15,12 @@ export interface FixtureIdentity {
 
 export function fixtureIdentity(label: string): FixtureIdentity {
   const stellar = Keypair.fromRawEd25519Seed(seed(`stellar:${label}`))
-  return { label, stellar, address: stellar.publicKey(), comm: keyPairFromSeed(seed(`comm:${label}`)) }
+  return {
+    label,
+    stellar,
+    address: stellar.publicKey(),
+    comm: keyPairFromSeed(seed(`comm:${label}`)),
+  }
 }
 
 export function fixtureContractId(label: string): string {

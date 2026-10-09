@@ -11,7 +11,9 @@ interface HashProps {
 }
 
 function truncate(value: string, head: number, tail: number) {
-  return value.length <= head + tail + 1 ? value : `${value.slice(0, head)}…${value.slice(-tail)}`
+  return value.length <= head + tail + 1
+    ? value
+    : `${value.slice(0, head)}…${value.slice(-tail)}`
 }
 
 function Hash({ value, head = 10, tail = 6, href, className }: HashProps) {
@@ -22,7 +24,12 @@ function Hash({ value, head = 10, tail = 6, href, className }: HashProps) {
     setTimeout(() => setCopied(false), 1200)
   }
   return (
-    <span className={cn("inline-flex items-center gap-1 font-mono text-xs text-foreground/80", className)}>
+    <span
+      className={cn(
+        "inline-flex items-center gap-1 font-mono text-xs text-foreground/80",
+        className
+      )}
+    >
       <span title={value}>{truncate(value, head, tail)}</span>
       <button
         type="button"
@@ -33,7 +40,13 @@ function Hash({ value, head = 10, tail = 6, href, className }: HashProps) {
         {copied ? <Check className="size-3" /> : <Copy className="size-3" />}
       </button>
       {href && (
-        <a href={href} target="_blank" rel="noreferrer" aria-label="Open in explorer" className="rounded p-0.5 text-muted-foreground hover:text-foreground">
+        <a
+          href={href}
+          target="_blank"
+          rel="noreferrer"
+          aria-label="Open in explorer"
+          className="rounded p-0.5 text-muted-foreground hover:text-foreground"
+        >
           <ExternalLink className="size-3" />
         </a>
       )}

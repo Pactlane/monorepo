@@ -65,7 +65,9 @@ export const envSchema = z
 
 export type Env = z.output<typeof envSchema>
 
-export function loadEnv(source: Record<string, string | undefined> = process.env): Env {
+export function loadEnv(
+  source: Record<string, string | undefined> = process.env
+): Env {
   const parsed = envSchema.safeParse(source)
   if (!parsed.success) {
     const issues = parsed.error.issues

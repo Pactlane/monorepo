@@ -1,12 +1,7 @@
 import { createHash } from "node:crypto"
 
 export type JsonValue =
-  | null
-  | boolean
-  | number
-  | string
-  | JsonValue[]
-  | { [key: string]: JsonValue }
+  null | boolean | number | string | JsonValue[] | { [key: string]: JsonValue }
 
 export function canonicalize(value: unknown): string {
   if (value === null) return "null"
@@ -14,7 +9,8 @@ export function canonicalize(value: unknown): string {
     case "boolean":
       return value ? "true" : "false"
     case "number":
-      if (!Number.isFinite(value)) throw new Error("Non-finite numbers cannot be canonicalized")
+      if (!Number.isFinite(value))
+        throw new Error("Non-finite numbers cannot be canonicalized")
       return JSON.stringify(value)
     case "string":
       return JSON.stringify(value)

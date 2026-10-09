@@ -10,7 +10,12 @@ test("local transport delivers isolated copies between peers", async () => {
   const inbox: SignedEnvelope[] = []
   await provider.receive(async (m) => void inbox.push(m))
 
-  const env = signEnvelope("pactlane.quote.v1", "atlas", fixtureIdentity("atlas").comm, { ask: "quote" })
+  const env = signEnvelope(
+    "pactlane.quote.v1",
+    "atlas",
+    fixtureIdentity("atlas").comm,
+    { ask: "quote" }
+  )
   await buyer.send("scout", env)
 
   expect(inbox).toHaveLength(1)

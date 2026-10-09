@@ -5,4 +5,8 @@ node_modules/
 .react-router/
 coverage/
 pnpm-lock.yaml
-.pnpm-store/
+.pnpm-store/bun.lock
+implementation_docs.md
+issues/
+packages/db/migrations/
+.github/assets/

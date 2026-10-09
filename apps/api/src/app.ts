@@ -8,7 +8,10 @@ import { agentRoutes, jobRoutes } from "./routes"
 
 export const VERSION = "0.1.0"
 
-export function createApp(env: Env, repo: Repository = createSimulationRepository()) {
+export function createApp(
+  env: Env,
+  repo: Repository = createSimulationRepository()
+) {
   const app = new Hono().basePath("/v1")
 
   app.use("*", secureHeaders())

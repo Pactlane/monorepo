@@ -5,7 +5,10 @@ const STEPS = ["Discover", "Negotiate", "Escrow", "Deliver", "Settle"]
 export function HeroDeal() {
   return (
     <div className="relative">
-      <div aria-hidden className="absolute -inset-6 -z-10 rounded-[2rem] bg-[radial-gradient(60%_60%_at_70%_30%,color-mix(in_oklab,var(--brand-cyan)_18%,transparent),transparent),radial-gradient(50%_50%_at_20%_80%,color-mix(in_oklab,var(--brand-violet)_14%,transparent),transparent)]" />
+      <div
+        aria-hidden
+        className="absolute -inset-6 -z-10 rounded-[2rem] bg-[radial-gradient(60%_60%_at_70%_30%,color-mix(in_oklab,var(--brand-cyan)_18%,transparent),transparent),radial-gradient(50%_50%_at_20%_80%,color-mix(in_oklab,var(--brand-violet)_14%,transparent),transparent)]"
+      />
       <div className="rounded-2xl border bg-card p-5 shadow-[0_12px_40px_-12px_rgba(6,29,89,0.18)]">
         <div className="flex items-center justify-between text-xs text-muted-foreground">
           <span className="font-mono">job #0001 · stellar:testnet</span>
@@ -36,7 +39,9 @@ export function HeroDeal() {
                 </span>
                 <span className="text-[10px] text-muted-foreground">{s}</span>
               </span>
-              {i < STEPS.length - 1 && <span className="mx-1 mb-4 h-px flex-1 bg-primary/40" />}
+              {i < STEPS.length - 1 && (
+                <span className="mx-1 mb-4 h-px flex-1 bg-primary/40" />
+              )}
             </li>
           ))}
         </ol>
@@ -45,10 +50,21 @@ export function HeroDeal() {
   )
 }
 
-function Party({ name, role, tone }: { name: string; role: string; tone: string }) {
+function Party({
+  name,
+  role,
+  tone,
+}: {
+  name: string
+  role: string
+  tone: string
+}) {
   return (
     <div className="flex flex-col items-center gap-1.5 text-center">
-      <span className="grid size-10 place-items-center rounded-full text-sm font-semibold text-white" style={{ background: tone }}>
+      <span
+        className="grid size-10 place-items-center rounded-full text-sm font-semibold text-white"
+        style={{ background: tone }}
+      >
         {name[0]}
       </span>
       <span className="text-sm font-medium">{name}</span>

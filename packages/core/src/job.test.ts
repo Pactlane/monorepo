@@ -1,5 +1,10 @@
 import { describe, expect, test } from "bun:test"
-import { InvalidTransitionError, canTransition, isTerminal, nextStatus } from "./job"
+import {
+  InvalidTransitionError,
+  canTransition,
+  isTerminal,
+  nextStatus,
+} from "./job"
 
 describe("job state machine", () => {
   test("happy path", () => {
@@ -21,7 +26,9 @@ describe("job state machine", () => {
       expect(canTransition(s, "fund")).toBe(false)
       expect(canTransition(s, "complete")).toBe(false)
     }
-    expect(() => nextStatus("completed", "complete")).toThrow(InvalidTransitionError)
+    expect(() => nextStatus("completed", "complete")).toThrow(
+      InvalidTransitionError
+    )
   })
 
   test("cannot complete before submission", () => {

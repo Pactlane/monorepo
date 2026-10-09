@@ -12,31 +12,54 @@ const agentQuery = z.object({
   limit,
 })
 
-const jobQuery = z.object({ status: z.enum(JOB_STATUSES).optional(), agent: z.string().max(200).optional(), limit })
+const jobQuery = z.object({
+  status: z.enum(JOB_STATUSES).optional(),
+  agent: z.string().max(200).optional(),
+  limit,
+})
 
 export function agentRoutes(repo: Repository) {
   return new Hono()
     .get("/", async (c) => {
       const parsed = agentQuery.safeParse(c.req.query())
-      if (!parsed.success) return c.json({ error: "invalid_query", issues: parsed.error.issues }, 400)
+      if (!parsed.success)
+        return c.json(
+          { error: "invalid_query", issues: parsed.error.issues },
+          400
+        )
       const { capability, q, verified, limit } = parsed.data
-      const data = await repo.directory.search({ capability, text: q, verifiedOnly: verified === "true", limit })
+      const data = await repo.directory.search({
+        capability,
+        text: q,
+        verifiedOnly: verified === "true",
+        limit,
+      })
       return c.json({ data })
     })
     .get("/:id", async (c) => {
       const listing = await repo.directory.get(c.req.param("id"))
-      return listing ? c.json({ data: listing }) : c.json({ error: "not_found" }, 404)
+      return listing
+        ? c.json({ data: listing })
+        : c.json({ error: "not_found" }, 404)
     })
-    .get("/:id/jobs", async (c) => c.json({ data: await repo.listJobs({ agentId: c.req.param("id") }) }))
+    .get("/:id/jobs", async (c) =>
+      c.json({ data: await repo.listJobs({ agentId: c.req.param("id") }) })
+    )
 }
 
 export function jobRoutes(repo: Repository) {
   return new Hono()
     .get("/", async (c) => {
       const parsed = jobQuery.safeParse(c.req.query())
-      if (!parsed.success) return c.json({ error: "invalid_query", issues: parsed.error.issues }, 400)
+      if (!parsed.success)
+        return c.json(
+          { error: "invalid_query", issues: parsed.error.issues },
+          400
+        )
       const { status, agent, limit } = parsed.data
-      return c.json({ data: await repo.listJobs({ status, agentId: agent, limit }) })
+      return c.json({
+        data: await repo.listJobs({ status, agentId: agent, limit }),
+      })
     })
     .get("/:id", async (c) => {
       const job = await repo.getJob(c.req.param("id"))
@@ -44,6 +67,8 @@ export function jobRoutes(repo: Repository) {
     })
     .get("/:id/events", async (c) => {
       const job = await repo.getJob(c.req.param("id"))
-      return job ? c.json({ data: job.events }) : c.json({ error: "not_found" }, 404)
+      return job
+        ? c.json({ data: job.events })
+        : c.json({ error: "not_found" }, 404)
     })
 }

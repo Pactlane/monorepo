@@ -24,7 +24,8 @@ export const NETWORKS: Record<NetworkId, NetworkInfo> = {
 
 export function networkFromPassphrase(passphrase: string): NetworkInfo {
   const found = Object.values(NETWORKS).find((n) => n.passphrase === passphrase)
-  if (!found) throw new Error(`Unknown Stellar network passphrase: ${passphrase}`)
+  if (!found)
+    throw new Error(`Unknown Stellar network passphrase: ${passphrase}`)
   return found
 }
 
@@ -32,7 +33,10 @@ export function explorerTxUrl(network: NetworkId, txHash: string): string {
   return `${NETWORKS[network].explorerUrl}/tx/${txHash}`
 }
 
-export function explorerContractUrl(network: NetworkId, contractId: string): string {
+export function explorerContractUrl(
+  network: NetworkId,
+  contractId: string
+): string {
   return `${NETWORKS[network].explorerUrl}/contract/${contractId}`
 }
 

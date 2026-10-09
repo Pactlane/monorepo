@@ -20,7 +20,10 @@ export function toAtomic(amount: string, decimals = USDC_DECIMALS): bigint {
   return BigInt(whole + frac.padEnd(decimals, "0"))
 }
 
-export function fromAtomic(atomic: bigint | string, decimals = USDC_DECIMALS): string {
+export function fromAtomic(
+  atomic: bigint | string,
+  decimals = USDC_DECIMALS
+): string {
   const value = typeof atomic === "string" ? BigInt(atomic) : atomic
   if (value < 0n) throw new Error("Negative amounts are not supported")
   const s = value.toString().padStart(decimals + 1, "0")
@@ -34,9 +37,14 @@ export function formatUsdc(atomic: bigint | string, minFraction = 2): string {
   return `${whole}.${frac.padEnd(minFraction, "0")} USDC`
 }
 
-export function assertSameAsset(expected: Asset, actual: Pick<Asset, "contractId" | "network">) {
+export function assertSameAsset(
+  expected: Asset,
+  actual: Pick<Asset, "contractId" | "network">
+) {
   if (expected.network !== actual.network) {
-    throw new Error(`Asset network mismatch: ${expected.network} vs ${actual.network}`)
+    throw new Error(
+      `Asset network mismatch: ${expected.network} vs ${actual.network}`
+    )
   }
   if (expected.contractId !== actual.contractId) {
     throw new Error(`Asset contract mismatch: expected ${expected.contractId}`)

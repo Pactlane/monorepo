@@ -19,4 +19,5 @@ export class MemoryNonceStore implements NonceStore {
   }
 }
 
-export const replayKey = (sender: string, nonce: string, domain: string) => `${domain}|${sender}|${nonce}`
+export const replayKey = (sender: string, nonce: string, domain: string) =>
+  `${domain}|${sender}|${nonce}`

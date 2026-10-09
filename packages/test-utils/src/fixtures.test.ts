@@ -10,8 +10,12 @@ describe("fixtures", () => {
   })
 
   test("are deterministic", () => {
-    expect(fixtureIdentity("scout").address).toBe(fixtureIdentity("scout").address)
-    expect(fixtureIdentity("scout").comm.publicKeyHex).toBe(fixtureIdentity("scout").comm.publicKeyHex)
+    expect(fixtureIdentity("scout").address).toBe(
+      fixtureIdentity("scout").address
+    )
+    expect(fixtureIdentity("scout").comm.publicKeyHex).toBe(
+      fixtureIdentity("scout").comm.publicKeyHex
+    )
   })
 
   test("evaluator is never the provider", () => {

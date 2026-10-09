@@ -18,8 +18,16 @@ export interface EscrowJob extends CreateJobParams {
 
 export interface EscrowClient {
   createJob(p: CreateJobParams): Promise<string>
-  fund(jobId: string, caller: string, expectedBudgetAtomic: bigint): Promise<void>
-  submit(jobId: string, caller: string, deliverableHash: Sha256Ref): Promise<void>
+  fund(
+    jobId: string,
+    caller: string,
+    expectedBudgetAtomic: bigint
+  ): Promise<void>
+  submit(
+    jobId: string,
+    caller: string,
+    deliverableHash: Sha256Ref
+  ): Promise<void>
   complete(jobId: string, caller: string, reasonHash: Sha256Ref): Promise<void>
   reject(jobId: string, caller: string, reasonHash: Sha256Ref): Promise<void>
   claimRefund(jobId: string, nowUnix: number): Promise<void>
@@ -44,7 +52,8 @@ export class SimulatedEscrow implements EscrowClient {
   }
 
   async createJob(p: CreateJobParams) {
-    if (p.evaluator === p.provider) throw new EscrowError("evaluator cannot be the provider")
+    if (p.evaluator === p.provider)
+      throw new EscrowError("evaluator cannot be the provider")
     if (p.budgetAtomic <= 0n) throw new EscrowError("budget must be positive")
     const id = String(++this.seq)
     this.jobs.set(id, { ...p, id, status: "open" })
@@ -56,7 +65,6 @@ export class SimulatedEscrow implements EscrowClient {
     if (!j) throw new EscrowError(`unknown job ${id}`)
     return j
   }
-
 
   private payout(j: EscrowJob, to: string) {
     const amount = this.held.get(j.id) ?? 0n
@@ -77,14 +85,16 @@ export class SimulatedEscrow implements EscrowClient {
 
   async submit(jobId: string, caller: string, deliverableHash: Sha256Ref) {
     const j = this.job(jobId)
-    if (caller !== j.provider) throw new EscrowError("only the provider can submit")
+    if (caller !== j.provider)
+      throw new EscrowError("only the provider can submit")
     j.status = nextStatus(j.status, "submit")
     j.deliverableHash = deliverableHash
   }
 
   async complete(jobId: string, caller: string, reasonHash: Sha256Ref) {
     const j = this.job(jobId)
-    if (caller !== j.evaluator) throw new EscrowError("only the evaluator can complete")
+    if (caller !== j.evaluator)
+      throw new EscrowError("only the evaluator can complete")
     j.status = nextStatus(j.status, "complete")
     j.reasonHash = reasonHash
     this.payout(j, j.provider)
@@ -92,7 +102,8 @@ export class SimulatedEscrow implements EscrowClient {
 
   async reject(jobId: string, caller: string, reasonHash: Sha256Ref) {
     const j = this.job(jobId)
-    const allowed = caller === j.evaluator || (j.status === "open" && caller === j.client)
+    const allowed =
+      caller === j.evaluator || (j.status === "open" && caller === j.client)
     if (!allowed) throw new EscrowError("not allowed to reject")
     j.status = nextStatus(j.status, j.status === "open" ? "cancel" : "reject")
     j.reasonHash = reasonHash
