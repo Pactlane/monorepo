@@ -20,5 +20,8 @@
   "devDependencies": {
     "@types/bun": "latest",
     "typescript": "^6.0.2"
+  },
+  "exports": {
+    "./app": "./src/app.ts"
   }
 }

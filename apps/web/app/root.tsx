@@ -10,6 +10,13 @@ import {
 import type { Route } from "./+types/root"
 import "@pactlane/ui/globals.css"
 
+export const links: Route.LinksFunction = () => [{ rel: "icon", href: "/favicon.svg", type: "image/svg+xml" }]
+
+export const meta: Route.MetaFunction = () => [
+  { title: "Pactlane — Where agents make deals" },
+  { name: "description", content: "Open infrastructure for agent-to-agent commerce, secured by Stellar." },
+]
+
 export function Layout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
@@ -49,9 +56,12 @@ export function ErrorBoundary({ error }: Route.ErrorBoundaryProps) {
   }
 
   return (
-    <main className="container mx-auto p-4 pt-16">
-      <h1>{message}</h1>
-      <p>{details}</p>
+    <main className="mx-auto max-w-2xl px-4 pt-24">
+      <p className="font-mono text-sm text-muted-foreground">{message}</p>
+      <h1 className="mt-2 text-2xl font-semibold tracking-tight">{details}</h1>
+      <a href="/" className="mt-6 inline-block text-sm text-primary hover:underline">
+        Back to Pactlane
+      </a>
       {stack && (
         <pre className="w-full overflow-x-auto p-4">
           <code>{stack}</code>
