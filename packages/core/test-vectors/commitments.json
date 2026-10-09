@@ -1,0 +1,14 @@
+[
+  {
+    "name": "empty string",
+    "domain": null,
+    "input": "",
+    "expected": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "name": "task commitment sorts keys",
+    "domain": "pactlane.task.v1",
+    "input": { "title": "Market report", "budget": "4000000" },
+    "expected": "sha256:49b581db7e40012cea73c22bf886166012772586919f51740a7e5d904a8ce779"
+  }
+]
