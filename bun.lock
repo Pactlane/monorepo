@@ -58,6 +58,20 @@
         "typescript": "^6.0.2",
       },
     },
+    "packages/evaluation": {
+      "name": "@pactlane/evaluation",
+      "version": "0.0.1",
+      "dependencies": {
+        "@pactlane/core": "workspace:*",
+        "zod": "^4.6.5",
+      },
+      "devDependencies": {
+        "@pactlane/config": "workspace:*",
+        "@pactlane/test-utils": "workspace:*",
+        "@types/bun": "latest",
+        "typescript": "^6.0.2",
+      },
+    },
     "packages/negotiation": {
       "name": "@pactlane/negotiation",
       "version": "0.0.1",
@@ -306,6 +320,8 @@
     "@pactlane/config": ["@pactlane/config@workspace:packages/config"],
 
     "@pactlane/core": ["@pactlane/core@workspace:packages/core"],
+
+    "@pactlane/evaluation": ["@pactlane/evaluation@workspace:packages/evaluation"],
 
     "@pactlane/negotiation": ["@pactlane/negotiation@workspace:packages/negotiation"],
 
