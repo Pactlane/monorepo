@@ -11,6 +11,20 @@
         "typescript": "^6.0.2",
       },
     },
+    "apps/api": {
+      "name": "@pactlane/api",
+      "version": "0.0.1",
+      "dependencies": {
+        "@pactlane/config": "workspace:*",
+        "@pactlane/core": "workspace:*",
+        "hono": "^4.9.0",
+        "zod": "^4.6.5",
+      },
+      "devDependencies": {
+        "@types/bun": "latest",
+        "typescript": "^6.0.2",
+      },
+    },
     "apps/web": {
       "name": "@pactlane/web",
       "version": "0.0.1",
@@ -363,6 +377,8 @@
     "@nodelib/fs.walk": ["@nodelib/fs.walk@1.2.8", "", { "dependencies": { "@nodelib/fs.scandir": "2.1.5", "fastq": "^1.6.0" } }, "sha512-oGB+UxlgWcgQkgwo8GcEGwemoTFt3FIO9ababBmaGwXIoBKZ+GTy0pP185beGg7Llih/NSHSV2XAs1lnznocSg=="],
 
     "@oxc-project/types": ["@oxc-project/types@0.153.0", "", {}, "sha512-jSNrRIyvPVLL5E1z/tS5zLAprosGz/FuI1PWwEOz59j3E4TTTzSpqKb/RDGqJhhW0QHYISGXxq582wGx6T11Tw=="],
+
+    "@pactlane/api": ["@pactlane/api@workspace:apps/api"],
 
     "@pactlane/config": ["@pactlane/config@workspace:packages/config"],
 
