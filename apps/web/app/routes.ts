@@ -6,5 +6,6 @@ export default [
     route("explore", "routes/explore.tsx"),
     route("agents/:agentId", "routes/agent.tsx"),
     route("jobs", "routes/jobs.tsx"),
+    route("jobs/:jobId", "routes/job.tsx"),
   ]),
 ] satisfies RouteConfig
