@@ -8,7 +8,7 @@ import {
 } from "react-router"
 
 import type { Route } from "./+types/root"
-import "@workspace/ui/globals.css"
+import "@pactlane/ui/globals.css"
 
 export function Layout({ children }: { children: React.ReactNode }) {
   return (

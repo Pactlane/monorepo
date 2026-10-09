@@ -1,5 +1,5 @@
 {
-  "name": "web",
+  "name": "@pactlane/web",
   "version": "0.0.1",
   "type": "module",
   "private": true,
@@ -13,7 +13,7 @@
   "dependencies": {
     "@react-router/node": "8.4.0",
     "@react-router/serve": "8.4.0",
-    "@workspace/ui": "workspace:*",
+    "@pactlane/ui": "workspace:*",
     "isbot": "^5",
     "lucide-react": "^1.53.0",
     "react": "^19.2.8",
