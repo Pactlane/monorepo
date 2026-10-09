@@ -1,0 +1,22 @@
+{
+  "name": "@pactlane/test-utils",
+  "version": "0.0.1",
+  "type": "module",
+  "private": true,
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "test": "bun test"
+  },
+  "dependencies": {
+    "@pactlane/core": "workspace:*",
+    "@stellar/stellar-base": "^14.0.0"
+  },
+  "devDependencies": {
+    "@pactlane/config": "workspace:*",
+    "@types/bun": "latest",
+    "typescript": "^6.0.2"
+  }
+}
