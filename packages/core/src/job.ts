@@ -1,12 +1,30 @@
 import { z } from "zod"
-import { agentIdSchema, atomicAmountSchema, sha256RefSchema, stellarAddressSchema, unixSchema } from "./schemas"
+import {
+  agentIdSchema,
+  atomicAmountSchema,
+  sha256RefSchema,
+  stellarAddressSchema,
+  unixSchema,
+} from "./schemas"
 
-export const JOB_STATUSES = ["open", "funded", "submitted", "completed", "rejected", "expired"] as const
+export const JOB_STATUSES = [
+  "open",
+  "funded",
+  "submitted",
+  "completed",
+  "rejected",
+  "expired",
+] as const
 export type JobStatus = (typeof JOB_STATUSES)[number]
 
-export const TERMINAL_STATUSES: readonly JobStatus[] = ["completed", "rejected", "expired"]
+export const TERMINAL_STATUSES: readonly JobStatus[] = [
+  "completed",
+  "rejected",
+  "expired",
+]
 
-export type JobAction = "fund" | "cancel" | "submit" | "complete" | "reject" | "expire"
+export type JobAction =
+  "fund" | "cancel" | "submit" | "complete" | "reject" | "expire"
 
 const TRANSITIONS: Record<JobStatus, Partial<Record<JobAction, JobStatus>>> = {
   open: { fund: "funded", cancel: "rejected", expire: "expired" },
@@ -47,7 +65,14 @@ export const deliverableSchema = z.object({
   taskSpecHash: sha256RefSchema,
   format: z.enum(["markdown", "json", "text"]),
   files: z
-    .array(z.object({ name: z.string(), sha256: sha256RefSchema, uri: z.string(), bytes: z.number().int().nonnegative() }))
+    .array(
+      z.object({
+        name: z.string(),
+        sha256: sha256RefSchema,
+        uri: z.string(),
+        bytes: z.number().int().nonnegative(),
+      })
+    )
     .min(1),
   submittedAtUnix: unixSchema,
 })
@@ -65,7 +90,9 @@ export const evaluationBundleSchema = z.object({
   taskSpecHash: sha256RefSchema,
   deliverableHash: sha256RefSchema,
   verdict: verdictSchema,
-  checks: z.array(z.object({ kind: z.string(), passed: z.boolean(), detail: z.string() })),
+  checks: z.array(
+    z.object({ kind: z.string(), passed: z.boolean(), detail: z.string() })
+  ),
   reasoningHash: sha256RefSchema.optional(),
   evaluatorAddress: stellarAddressSchema,
   evaluationDeadlineUnix: unixSchema,
@@ -75,7 +102,15 @@ export const evaluationBundleSchema = z.object({
 export type EvaluationBundle = z.infer<typeof evaluationBundleSchema>
 
 export const jobEventSchema = z.object({
-  type: z.enum(["created", "funded", "submitted", "completed", "rejected", "expired", "refunded"]),
+  type: z.enum([
+    "created",
+    "funded",
+    "submitted",
+    "completed",
+    "rejected",
+    "expired",
+    "refunded",
+  ]),
   ledger: z.number().int().nonnegative(),
   txHash: z.string(),
   atUnix: unixSchema,

@@ -1,7 +1,13 @@
 import { NETWORKS, formatUsdc, toAtomic } from "@pactlane/core"
 import { MemoryAgentDirectory, type AgentListing } from "@pactlane/discovery"
 import { LocalHub, MemoryNonceStore } from "@pactlane/negotiation"
-import { BuyerAgent, EvaluatorAgent, ProviderAgent, SimulatedEscrow, type Identity } from "@pactlane/sdk"
+import {
+  BuyerAgent,
+  EvaluatorAgent,
+  ProviderAgent,
+  SimulatedEscrow,
+  type Identity,
+} from "@pactlane/sdk"
 import { MemoryEvidenceStore } from "@pactlane/storage-0g"
 import {
   BASE_TIME,
@@ -13,12 +19,17 @@ import {
   marketReportTask as task,
 } from "@pactlane/test-utils"
 
-const log = (step: string, msg: string) => console.log(`  ${step.padEnd(10)} ${msg}`)
+const log = (step: string, msg: string) =>
+  console.log(`  ${step.padEnd(10)} ${msg}`)
 const short = (h: string) => `${h.slice(0, 15)}…${h.slice(-6)}`
 
 const identity = (label: string): Identity => {
   const f = fixtureIdentity(label)
-  return { agentId: agentByLabel(label).agentId, address: f.address, comm: f.comm }
+  return {
+    agentId: agentByLabel(label).agentId,
+    address: f.address,
+    comm: f.comm,
+  }
 }
 
 const deps = {
@@ -43,12 +54,28 @@ const listing = (label: string): AgentListing => ({
 
 const hub = new LocalHub()
 const atlas = identity("atlas")
-const buyer = new BuyerAgent(atlas, deps, hub.connect(atlas.agentId), new MemoryAgentDirectory([listing("scout"), listing("scribe")]), {
-  maxBudgetAtomic: toAtomic("0.40"),
-  trustedEvaluatorPolicyIds: ["default-v1"],
-})
-const scout = new ProviderAgent(identity("scout"), deps, hub.connect(identity("scout").agentId), () => toAtomic("0.40"))
-const scribe = new ProviderAgent(identity("scribe"), deps, hub.connect(identity("scribe").agentId), () => toAtomic("0.55"))
+const buyer = new BuyerAgent(
+  atlas,
+  deps,
+  hub.connect(atlas.agentId),
+  new MemoryAgentDirectory([listing("scout"), listing("scribe")]),
+  {
+    maxBudgetAtomic: toAtomic("0.40"),
+    trustedEvaluatorPolicyIds: ["default-v1"],
+  }
+)
+const scout = new ProviderAgent(
+  identity("scout"),
+  deps,
+  hub.connect(identity("scout").agentId),
+  () => toAtomic("0.40")
+)
+const scribe = new ProviderAgent(
+  identity("scribe"),
+  deps,
+  hub.connect(identity("scribe").agentId),
+  () => toAtomic("0.55")
+)
 const evaluator = new EvaluatorAgent(judge.address, deps)
 
 const report = `# Summary
@@ -62,20 +89,36 @@ The escrow kernel is unaudited and testnet-only. Evaluator verdicts are accounta
 
 deps.escrow.mint(atlas.address, toAtomic("1"))
 
-console.log("\n  PACTLANE · hello-commerce   [SIMULATION — no real funds move]\n")
+console.log(
+  "\n  PACTLANE · hello-commerce   [SIMULATION — no real funds move]\n"
+)
 await Promise.all([buyer.listen(), scout.listen(), scribe.listen()])
 
 const providers = await buyer.discover(task.capability)
 log("discover", providers.map((p) => p.profile.displayName).join(", "))
 
 const quotes = await buyer.requestQuotes(task, providers)
-log("negotiate", `${quotes.length} quote(s) within ${formatUsdc(buyer.policy.maxBudgetAtomic)}`)
+log(
+  "negotiate",
+  `${quotes.length} quote(s) within ${formatUsdc(buyer.policy.maxBudgetAtomic)}`
+)
 const best = quotes[0]
 if (!best) throw new Error("no acceptable quote")
-log("accept", `${best.provider.profile.displayName} @ ${formatUsdc(best.quote.priceAtomic)}  quote ${short(best.quoteHash)}`)
+log(
+  "accept",
+  `${best.provider.profile.displayName} @ ${formatUsdc(best.quote.priceAtomic)}  quote ${short(best.quoteHash)}`
+)
 
-const funded = await buyer.createAndFund({ task, ...best, evaluatorAddress: judge.address, evaluationPolicyId: "default-v1" })
-log("escrow", `job #${funded.jobId} funded  agreement ${short(funded.agreementHash)}`)
+const funded = await buyer.createAndFund({
+  task,
+  ...best,
+  evaluatorAddress: judge.address,
+  evaluationPolicyId: "default-v1",
+})
+log(
+  "escrow",
+  `job #${funded.jobId} funded  agreement ${short(funded.agreementHash)}`
+)
 
 const deliverable = await scout.deliver(funded.jobId, () => report, task)
 log("deliver", `deliverable ${short(deliverable.storedSha256)}`)
@@ -87,9 +130,16 @@ const result = await evaluator.evaluate({
   providerWallet: best.provider.profile.providerWallet,
   evaluationDeadlineUnix: funded.agreement.evaluationDeadlineUnix,
 })
-for (const c of result.checks) log("", `${c.passed ? "✓" : "✗"} ${c.kind}: ${c.detail}`)
+for (const c of result.checks)
+  log("", `${c.passed ? "✓" : "✗"} ${c.kind}: ${c.detail}`)
 
 const job = await deps.escrow.getJob(funded.jobId)
-log("settle", `${result.verdict.toUpperCase()} → job ${job.status}  evaluation ${short(result.bundleHash)}`)
-log("balances", `Atlas ${formatUsdc(deps.escrow.balanceOf(atlas.address))} · Scout ${formatUsdc(deps.escrow.balanceOf(fixtureIdentity("scout").address))}`)
+log(
+  "settle",
+  `${result.verdict.toUpperCase()} → job ${job.status}  evaluation ${short(result.bundleHash)}`
+)
+log(
+  "balances",
+  `Atlas ${formatUsdc(deps.escrow.balanceOf(atlas.address))} · Scout ${formatUsdc(deps.escrow.balanceOf(fixtureIdentity("scout").address))}`
+)
 console.log()

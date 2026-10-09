@@ -2,7 +2,12 @@ import { data, Link } from "react-router"
 import { ArrowLeft, BadgeCheck, Globe, Radio } from "lucide-react"
 import { Badge } from "@pactlane/ui/components/badge"
 import { Button } from "@pactlane/ui/components/button"
-import { Card, CardContent, CardHeader, CardTitle } from "@pactlane/ui/components/card"
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "@pactlane/ui/components/card"
 import { Hash } from "@pactlane/ui/components/hash"
 import type { Route } from "./+types/agent"
 import { api } from "@/lib/api.server"
@@ -10,13 +15,22 @@ import { AgentAvatar } from "@/components/agent-avatar"
 import { JobsTable } from "@/components/jobs-table"
 import { agentIndex, explorerContractUrl, formatUsdc } from "@/lib/format"
 
-export const meta: Route.MetaFunction = ({ loaderData }) => [{ title: `${loaderData?.agent.profile.displayName ?? "Agent"} · Pactlane` }]
+export const meta: Route.MetaFunction = ({ loaderData }) => [
+  { title: `${loaderData?.agent.profile.displayName ?? "Agent"} · Pactlane` },
+]
 
 export async function loader({ params }: Route.LoaderArgs) {
-  const agent = await api().agent(params.agentId).catch(() => null)
+  const agent = await api()
+    .agent(params.agentId)
+    .catch(() => null)
   if (!agent) throw data("Agent not found", { status: 404 })
-  const [jobs, all] = await Promise.all([api().jobs.list({ agent: params.agentId }), api().discover()])
-  const names = Object.fromEntries(all.map((a) => [a.profile.agentId, a.profile.displayName]))
+  const [jobs, all] = await Promise.all([
+    api().jobs.list({ agent: params.agentId }),
+    api().discover(),
+  ])
+  const names = Object.fromEntries(
+    all.map((a) => [a.profile.agentId, a.profile.displayName])
+  )
   return { agent, jobs, names }
 }
 
@@ -26,17 +40,28 @@ export default function AgentPage({ loaderData }: Route.ComponentProps) {
   const registry = p.agentId.split(":")[2]!.split("#")[0]!
   return (
     <div className="mx-auto max-w-6xl px-4 py-10 sm:px-6">
-      <Link to="/explore" className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground">
+      <Link
+        to="/explore"
+        className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground"
+      >
         <ArrowLeft className="size-3.5" /> All agents
       </Link>
 
       <div className="mt-6 flex flex-col gap-6 md:flex-row md:items-start md:justify-between">
         <div className="flex items-start gap-4">
-          <AgentAvatar name={p.displayName} seed={p.agentId} className="size-14 text-lg" />
+          <AgentAvatar
+            name={p.displayName}
+            seed={p.agentId}
+            className="size-14 text-lg"
+          />
           <div>
             <div className="flex flex-wrap items-center gap-2">
-              <h1 className="text-2xl font-semibold tracking-tight">{p.displayName}</h1>
-              <span className="font-mono text-sm text-muted-foreground">{agentIndex(p.agentId)}</span>
+              <h1 className="text-2xl font-semibold tracking-tight">
+                {p.displayName}
+              </h1>
+              <span className="font-mono text-sm text-muted-foreground">
+                {agentIndex(p.agentId)}
+              </span>
               {agent.provenance === "chain-verified" ? (
                 <Badge variant="success">
                   <BadgeCheck aria-hidden /> Registered on Stellar-8004
@@ -45,7 +70,9 @@ export default function AgentPage({ loaderData }: Route.ComponentProps) {
                 <Badge>Self-reported</Badge>
               )}
             </div>
-            <p className="mt-2 max-w-2xl text-muted-foreground">{p.description}</p>
+            <p className="mt-2 max-w-2xl text-muted-foreground">
+              {p.description}
+            </p>
             <div className="mt-3 flex flex-wrap gap-1.5">
               {p.capabilities.map((c) => (
                 <Badge key={c} variant="outline">
@@ -56,10 +83,17 @@ export default function AgentPage({ loaderData }: Route.ComponentProps) {
           </div>
         </div>
         <div className="flex flex-col items-start gap-2 md:items-end">
-          <Button size="lg" className="h-10 px-4" disabled title="Quotes open with testnet wallet support">
+          <Button
+            size="lg"
+            className="h-10 px-4"
+            disabled
+            title="Quotes open with testnet wallet support"
+          >
             Request quote
           </Button>
-          <span className="text-xs text-muted-foreground">from {formatUsdc(p.minBudgetAtomic)}</span>
+          <span className="text-xs text-muted-foreground">
+            from {formatUsdc(p.minBudgetAtomic)}
+          </span>
         </div>
       </div>
 
@@ -73,7 +107,8 @@ export default function AgentPage({ loaderData }: Route.ComponentProps) {
             <Metric label="Rejected" value={agent.rejectedJobs} />
             <Metric label="Max concurrent" value={p.maxConcurrentJobs} />
             <p className="col-span-3 text-xs text-muted-foreground">
-              Counts come from finalized escrow jobs. Reputation is advisory and never authorizes settlement.
+              Counts come from finalized escrow jobs. Reputation is advisory and
+              never authorizes settlement.
             </p>
           </CardContent>
         </Card>
@@ -84,7 +119,10 @@ export default function AgentPage({ loaderData }: Route.ComponentProps) {
           <CardContent>
             <dl className="space-y-3 text-sm">
               <Field label="Registry">
-                <Hash value={registry} href={explorerContractUrl("testnet", registry)} />
+                <Hash
+                  value={registry}
+                  href={explorerContractUrl("testnet", registry)}
+                />
               </Field>
               <Field label="Owner">
                 <Hash value={p.ownerAddress} />
@@ -97,19 +135,28 @@ export default function AgentPage({ loaderData }: Route.ComponentProps) {
               </Field>
               <Field label="Transport">
                 <span className="inline-flex items-center gap-1.5 text-xs">
-                  {agent.endpointActive ? <Radio className="size-3.5 text-success" /> : <Radio className="size-3.5 text-warning" />}
-                  {agent.endpointActive ? "Endpoint healthy" : "Endpoint offline"}
+                  {agent.endpointActive ? (
+                    <Radio className="size-3.5 text-success" />
+                  ) : (
+                    <Radio className="size-3.5 text-warning" />
+                  )}
+                  {agent.endpointActive
+                    ? "Endpoint healthy"
+                    : "Endpoint offline"}
                 </span>
               </Field>
               {p.serviceEndpoint && (
                 <Field label="Endpoint">
                   <span className="inline-flex items-center gap-1 font-mono text-xs">
-                    <Globe className="size-3" /> {new URL(p.serviceEndpoint).host}
+                    <Globe className="size-3" />{" "}
+                    {new URL(p.serviceEndpoint).host}
                   </span>
                 </Field>
               )}
               <Field label="Assets">
-                <span className="font-mono text-xs">{p.supportedAssets.join(", ")}</span>
+                <span className="font-mono text-xs">
+                  {p.supportedAssets.join(", ")}
+                </span>
               </Field>
             </dl>
           </CardContent>
@@ -131,7 +178,13 @@ function Metric({ label, value }: { label: string; value: number }) {
   )
 }
 
-function Field({ label, children }: { label: string; children: React.ReactNode }) {
+function Field({
+  label,
+  children,
+}: {
+  label: string
+  children: React.ReactNode
+}) {
   return (
     <div className="flex items-center justify-between gap-3">
       <dt className="text-muted-foreground">{label}</dt>

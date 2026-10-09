@@ -1,8 +1,14 @@
 import { z } from "zod"
 
-export const sha256RefSchema = z.string().regex(/^sha256:[0-9a-f]{64}$/, "Expected sha256:<hex>")
-export const atomicAmountSchema = z.string().regex(/^\d+$/, "Expected integer atomic units")
-export const agentIdSchema = z.string().regex(/^stellar:(testnet|mainnet):[A-Z0-9]+#\d+$/)
+export const sha256RefSchema = z
+  .string()
+  .regex(/^sha256:[0-9a-f]{64}$/, "Expected sha256:<hex>")
+export const atomicAmountSchema = z
+  .string()
+  .regex(/^\d+$/, "Expected integer atomic units")
+export const agentIdSchema = z
+  .string()
+  .regex(/^stellar:(testnet|mainnet):[A-Z0-9]+#\d+$/)
 export const stellarAddressSchema = z.string().regex(/^[GC][A-Z2-7]{55}$/)
 export const unixSchema = z.number().int().nonnegative()
 export const nonceSchema = z.string().min(16).max(128)
@@ -17,7 +23,9 @@ export const agentProfileSchema = z.object({
   capabilities: z.array(z.string().min(1).max(48)).min(1).max(32),
   serviceEndpoint: z.url().optional(),
   axlPeerId: z.string().optional(),
-  communicationKey: z.string().regex(/^[0-9a-f]{64}$/, "Expected hex ed25519 public key"),
+  communicationKey: z
+    .string()
+    .regex(/^[0-9a-f]{64}$/, "Expected hex ed25519 public key"),
   supportedAssets: z.array(z.string()).min(1),
   minBudgetAtomic: atomicAmountSchema,
   maxConcurrentJobs: z.number().int().positive(),
@@ -28,11 +36,23 @@ export const agentProfileSchema = z.object({
 export type AgentProfile = z.infer<typeof agentProfileSchema>
 
 export const rubricCheckSchema = z.discriminatedUnion("kind", [
-  z.object({ kind: z.literal("required_sections"), sections: z.array(z.string()).min(1) }),
-  z.object({ kind: z.literal("min_words"), value: z.number().int().positive() }),
-  z.object({ kind: z.literal("max_words"), value: z.number().int().positive() }),
+  z.object({
+    kind: z.literal("required_sections"),
+    sections: z.array(z.string()).min(1),
+  }),
+  z.object({
+    kind: z.literal("min_words"),
+    value: z.number().int().positive(),
+  }),
+  z.object({
+    kind: z.literal("max_words"),
+    value: z.number().int().positive(),
+  }),
   z.object({ kind: z.literal("contains"), terms: z.array(z.string()).min(1) }),
-  z.object({ kind: z.literal("format"), value: z.enum(["markdown", "json", "text"]) }),
+  z.object({
+    kind: z.literal("format"),
+    value: z.enum(["markdown", "json", "text"]),
+  }),
 ])
 export type RubricCheck = z.infer<typeof rubricCheckSchema>
 

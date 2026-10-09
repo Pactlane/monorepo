@@ -6,4 +6,6 @@ const app = createApp(env)
 
 export default { port: env.API_PORT, fetch: app.fetch }
 
-console.log(`pactlane api listening on :${env.API_PORT} (${env.MOCK_EXTERNALS ? "SIMULATION" : "live"})`)
+console.log(
+  `pactlane api listening on :${env.API_PORT} (${env.MOCK_EXTERNALS ? "SIMULATION" : "live"})`
+)

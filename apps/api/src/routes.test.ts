@@ -11,11 +11,16 @@ const get = async (path: string) => {
 
 test("lists agents filtered by capability", async () => {
   const { body } = await get("/v1/agents?capability=research")
-  expect(body.data.map((l: any) => l.profile.displayName)).toEqual(["Research Scout", "Scribe"])
+  expect(body.data.map((l: any) => l.profile.displayName)).toEqual([
+    "Research Scout",
+    "Scribe",
+  ])
 })
 
 test("gets an agent by encoded id", async () => {
-  const { status, body } = await get(`/v1/agents/${encodeURIComponent(agentId(2))}`)
+  const { status, body } = await get(
+    `/v1/agents/${encodeURIComponent(agentId(2))}`
+  )
   expect(status).toBe(200)
   expect(body.data.profile.displayName).toBe("Research Scout")
 })

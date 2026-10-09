@@ -18,7 +18,11 @@ import {
   type NegotiationTransport,
   type SignedEnvelope,
 } from "@pactlane/negotiation"
-import { getVerified, type EvidenceStore, type StoredArtifact } from "@pactlane/storage-0g"
+import {
+  getVerified,
+  type EvidenceStore,
+  type StoredArtifact,
+} from "@pactlane/storage-0g"
 import type { EscrowClient } from "./escrow"
 
 export interface Identity {
@@ -70,16 +74,33 @@ export class ProviderAgent {
         nonce: randomNonce(),
         expiresAtUnix: this.deps.ctx.nowUnix + 600,
       }
-      await this.transport.send(rfq.replyTo, signEnvelope("pactlane.quote.v1", this.identity.agentId, this.identity.comm, quote))
+      await this.transport.send(
+        rfq.replyTo,
+        signEnvelope(
+          "pactlane.quote.v1",
+          this.identity.agentId,
+          this.identity.comm,
+          quote
+        )
+      )
     })
   }
 
-  async deliver(jobId: string, work: (task: TaskSpec) => Promise<string> | string, task: TaskSpec) {
+  async deliver(
+    jobId: string,
+    work: (task: TaskSpec) => Promise<string> | string,
+    task: TaskSpec
+  ) {
     const job = await this.deps.escrow.getJob(jobId)
-    if (job.status !== "funded") throw new Error("refusing to work on an unfunded job")
+    if (job.status !== "funded")
+      throw new Error("refusing to work on an unfunded job")
     const bytes = new TextEncoder().encode(await work(task))
     const artifact = await this.deps.store.put("result", bytes)
-    await this.deps.escrow.submit(jobId, this.identity.address, artifact.storedSha256)
+    await this.deps.escrow.submit(
+      jobId,
+      this.identity.address,
+      artifact.storedSha256
+    )
     return artifact
   }
 }
@@ -106,7 +127,8 @@ export class BuyerAgent {
 
   async listen() {
     await this.transport.receive(async (env) => {
-      if (env.domain === "pactlane.quote.v1") this.inbox.push(env as SignedEnvelope<Quote>)
+      if (env.domain === "pactlane.quote.v1")
+        this.inbox.push(env as SignedEnvelope<Quote>)
     })
   }
 
@@ -116,22 +138,47 @@ export class BuyerAgent {
 
   async requestQuotes(task: TaskSpec, providers: AgentListing[]) {
     const taskSpecHash = commit("pactlane.task.v1", task)
-    const rfq: Rfq = { task, taskSpecHash, buyerAgentId: this.identity.agentId, replyTo: this.transport.peerId }
-    const env = signEnvelope("pactlane.rfq.v1", this.identity.agentId, this.identity.comm, rfq)
+    const rfq: Rfq = {
+      task,
+      taskSpecHash,
+      buyerAgentId: this.identity.agentId,
+      replyTo: this.transport.peerId,
+    }
+    const env = signEnvelope(
+      "pactlane.rfq.v1",
+      this.identity.agentId,
+      this.identity.comm,
+      rfq
+    )
     for (const p of providers) await this.transport.send(p.profile.agentId, env)
-    const received = this.inbox.filter((q) => q.payload.taskSpecHash === taskSpecHash)
-    const valid: { quote: Quote; quoteHash: Sha256Ref; provider: AgentListing }[] = []
+    const received = this.inbox.filter(
+      (q) => q.payload.taskSpecHash === taskSpecHash
+    )
+    const valid: {
+      quote: Quote
+      quoteHash: Sha256Ref
+      provider: AgentListing
+    }[] = []
     for (const envelope of received) {
-      const provider = providers.find((p) => p.profile.agentId === envelope.sender)
+      const provider = providers.find(
+        (p) => p.profile.agentId === envelope.sender
+      )
       if (!provider) continue
       try {
-        const res = await acceptQuote(envelope, provider.profile.communicationKey, this.deps.ctx, this.policy)
+        const res = await acceptQuote(
+          envelope,
+          provider.profile.communicationKey,
+          this.deps.ctx,
+          this.policy
+        )
         valid.push({ ...res, provider })
       } catch {
         continue
       }
     }
-    return valid.sort((a, b) => (BigInt(a.quote.priceAtomic) < BigInt(b.quote.priceAtomic) ? -1 : 1))
+    return valid.sort((a, b) =>
+      BigInt(a.quote.priceAtomic) < BigInt(b.quote.priceAtomic) ? -1 : 1
+    )
   }
 
   async createAndFund(opts: {
@@ -172,8 +219,19 @@ export class BuyerAgent {
       descriptionHash: agreementHash,
       deadlineUnix: agreement.evaluationDeadlineUnix,
     })
-    await this.deps.escrow.fund(jobId, this.identity.address, BigInt(quote.priceAtomic))
-    return { jobId, quote, quoteHash: opts.quoteHash, agreement, agreementHash, taskArtifact }
+    await this.deps.escrow.fund(
+      jobId,
+      this.identity.address,
+      BigInt(quote.priceAtomic)
+    )
+    return {
+      jobId,
+      quote,
+      quoteHash: opts.quoteHash,
+      agreement,
+      agreementHash,
+      taskArtifact,
+    }
   }
 }
 
@@ -183,10 +241,18 @@ export class EvaluatorAgent {
     private deps: RoleDeps
   ) {}
 
-  async evaluate(opts: { jobId: string; task: TaskSpec; deliverable: StoredArtifact; providerWallet: string; evaluationDeadlineUnix: number }) {
+  async evaluate(opts: {
+    jobId: string
+    task: TaskSpec
+    deliverable: StoredArtifact
+    providerWallet: string
+    evaluationDeadlineUnix: number
+  }) {
     const job = await this.deps.escrow.getJob(opts.jobId)
-    if (job.status !== "submitted") throw new Error(`job ${opts.jobId} is ${job.status}, not submitted`)
-    if (job.deliverableHash !== opts.deliverable.storedSha256) throw new Error("deliverable differs from on-chain commitment")
+    if (job.status !== "submitted")
+      throw new Error(`job ${opts.jobId} is ${job.status}, not submitted`)
+    if (job.deliverableHash !== opts.deliverable.storedSha256)
+      throw new Error("deliverable differs from on-chain commitment")
     const bytes = await getVerified(this.deps.store, opts.deliverable)
     const { bundle, bundleHash } = evaluateDeliverable({
       task: opts.task,
@@ -200,9 +266,18 @@ export class EvaluatorAgent {
       evaluationDeadlineUnix: opts.evaluationDeadlineUnix,
       nowUnix: this.deps.ctx.nowUnix,
     })
-    await this.deps.store.put("evaluation", new TextEncoder().encode(JSON.stringify(bundle)))
-    if (bundle.verdict === "pass") await this.deps.escrow.complete(opts.jobId, this.address, bundleHash)
-    else if (bundle.verdict === "fail") await this.deps.escrow.reject(opts.jobId, this.address, bundleHash)
-    return { verdict: bundle.verdict, checks: bundle.checks as CheckResult[], bundleHash }
+    await this.deps.store.put(
+      "evaluation",
+      new TextEncoder().encode(JSON.stringify(bundle))
+    )
+    if (bundle.verdict === "pass")
+      await this.deps.escrow.complete(opts.jobId, this.address, bundleHash)
+    else if (bundle.verdict === "fail")
+      await this.deps.escrow.reject(opts.jobId, this.address, bundleHash)
+    return {
+      verdict: bundle.verdict,
+      checks: bundle.checks as CheckResult[],
+      bundleHash,
+    }
   }
 }

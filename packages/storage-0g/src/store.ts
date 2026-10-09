@@ -19,10 +19,15 @@ export interface EvidenceStore {
 
 export class ArtifactIntegrityError extends Error {}
 
-export async function getVerified(store: EvidenceStore, ref: StoredArtifact): Promise<Uint8Array> {
+export async function getVerified(
+  store: EvidenceStore,
+  ref: StoredArtifact
+): Promise<Uint8Array> {
   const bytes = await store.get(ref)
   if (!(await store.verify(ref, bytes))) {
-    throw new ArtifactIntegrityError(`Artifact ${ref.uri} does not match ${ref.storedSha256}`)
+    throw new ArtifactIntegrityError(
+      `Artifact ${ref.uri} does not match ${ref.storedSha256}`
+    )
   }
   return bytes
 }
@@ -34,7 +39,12 @@ export class MemoryEvidenceStore implements EvidenceStore {
     const hash = sha256Ref(data)
     const uri = `memory://${kind}/${hash.slice(7)}`
     this.blobs.set(uri, new Uint8Array(data))
-    return { uri, storedSha256: hash, plaintextSha256: hash, provider: "memory" }
+    return {
+      uri,
+      storedSha256: hash,
+      plaintextSha256: hash,
+      provider: "memory",
+    }
   }
 
   async get(ref: StoredArtifact): Promise<Uint8Array> {

@@ -26,12 +26,18 @@ export interface AgentDirectory {
 function matchesText(listing: AgentListing, text: string): boolean {
   const t = text.toLowerCase()
   const p = listing.profile
-  return [p.displayName, p.description, ...p.capabilities].some((s) => s.toLowerCase().includes(t))
+  return [p.displayName, p.description, ...p.capabilities].some((s) =>
+    s.toLowerCase().includes(t)
+  )
 }
 
-const price = (l: AgentListing) => BigInt(l.quoteAtomic ?? l.profile.minBudgetAtomic)
+const price = (l: AgentListing) =>
+  BigInt(l.quoteAtomic ?? l.profile.minBudgetAtomic)
 
-export function rankListings(listings: AgentListing[], capability?: string): AgentListing[] {
+export function rankListings(
+  listings: AgentListing[],
+  capability?: string
+): AgentListing[] {
   const score = (l: AgentListing): [number, number, number] => [
     capability && l.profile.capabilities.includes(capability) ? 1 : 0,
     l.endpointActive ? 1 : 0,
@@ -40,7 +46,8 @@ export function rankListings(listings: AgentListing[], capability?: string): Age
   return [...listings].sort((a, b) => {
     const sa = score(a)
     const sb = score(b)
-    for (let i = 0; i < sa.length; i++) if (sa[i] !== sb[i]) return sb[i]! - sa[i]!
+    for (let i = 0; i < sa.length; i++)
+      if (sa[i] !== sb[i]) return sb[i]! - sa[i]!
     const pa = price(a)
     const pb = price(b)
     return pa < pb ? -1 : pa > pb ? 1 : 0

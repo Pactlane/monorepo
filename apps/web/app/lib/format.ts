@@ -1,5 +1,9 @@
 import { formatUsdc } from "@pactlane/core/money"
-import { explorerTxUrl, explorerContractUrl, type NetworkId } from "@pactlane/core/network"
+import {
+  explorerTxUrl,
+  explorerContractUrl,
+  type NetworkId,
+} from "@pactlane/core/network"
 
 export { formatUsdc, explorerTxUrl, explorerContractUrl, type NetworkId }
 
@@ -22,4 +26,5 @@ export function formatDate(unix: number) {
   })
 }
 
-export const agentHref = (agentId: string) => `/agents/${encodeURIComponent(agentId)}`
+export const agentHref = (agentId: string) =>
+  `/agents/${encodeURIComponent(agentId)}`

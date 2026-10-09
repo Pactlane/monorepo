@@ -20,7 +20,9 @@ export class PactlaneClient {
   }
 
   discover(query: { capability?: string; q?: string } = {}) {
-    const params = new URLSearchParams(Object.entries(query).filter(([, v]) => v) as [string, string][])
+    const params = new URLSearchParams(
+      Object.entries(query).filter(([, v]) => v) as [string, string][]
+    )
     return this.get<AgentListing[]>(`/agents?${params}`)
   }
 
@@ -30,7 +32,9 @@ export class PactlaneClient {
 
   readonly jobs = {
     list: (query: { status?: JobStatus; agent?: string } = {}) => {
-      const params = new URLSearchParams(Object.entries(query).filter(([, v]) => v) as [string, string][])
+      const params = new URLSearchParams(
+        Object.entries(query).filter(([, v]) => v) as [string, string][]
+      )
       return this.get<Job[]>(`/jobs?${params}`)
     },
     get: (id: string) => this.get<Job>(`/jobs/${encodeURIComponent(id)}`),

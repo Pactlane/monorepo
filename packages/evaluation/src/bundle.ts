@@ -23,11 +23,18 @@ export interface EvaluateInput {
 
 export class EvaluationError extends Error {}
 
-export function evaluateDeliverable(input: EvaluateInput): { bundle: EvaluationBundle; bundleHash: Sha256Ref } {
-  if (input.evaluatorAddress === input.providerWallet) throw new EvaluationError("evaluator cannot be the provider")
-  if (input.nowUnix > input.evaluationDeadlineUnix) throw new EvaluationError("evaluation deadline passed")
+export function evaluateDeliverable(input: EvaluateInput): {
+  bundle: EvaluationBundle
+  bundleHash: Sha256Ref
+} {
+  if (input.evaluatorAddress === input.providerWallet)
+    throw new EvaluationError("evaluator cannot be the provider")
+  if (input.nowUnix > input.evaluationDeadlineUnix)
+    throw new EvaluationError("evaluation deadline passed")
   if (sha256Ref(input.deliverableBytes) !== input.deliverableHash) {
-    throw new EvaluationError("deliverable bytes do not match the submitted commitment")
+    throw new EvaluationError(
+      "deliverable bytes do not match the submitted commitment"
+    )
   }
   const content = new TextDecoder().decode(input.deliverableBytes)
   const { verdict, checks } = evaluateContent(input.task, content)

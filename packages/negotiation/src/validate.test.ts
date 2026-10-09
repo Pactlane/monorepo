@@ -1,5 +1,11 @@
 import { beforeEach, describe, expect, test } from "bun:test"
-import { NETWORKS, commit, toAtomic, type Agreement, type Quote } from "@pactlane/core"
+import {
+  NETWORKS,
+  commit,
+  toAtomic,
+  type Agreement,
+  type Quote,
+} from "@pactlane/core"
 import {
   BASE_TIME,
   COMMERCE_CONTRACT_ID,
@@ -11,11 +17,18 @@ import {
 } from "@pactlane/test-utils"
 import { signEnvelope } from "./envelope"
 import { MemoryNonceStore } from "./replay"
-import { acceptQuote, validateAgreement, type NegotiationContext } from "./validate"
+import {
+  acceptQuote,
+  validateAgreement,
+  type NegotiationContext,
+} from "./validate"
 
 const scout = fixtureIdentity("scout")
 const atlas = fixtureIdentity("atlas")
-const policy = { maxBudgetAtomic: toAtomic("0.40"), trustedEvaluatorPolicyIds: ["default-v1"] }
+const policy = {
+  maxBudgetAtomic: toAtomic("0.40"),
+  trustedEvaluatorPolicyIds: ["default-v1"],
+}
 
 const quote: Quote = {
   domain: "pactlane.quote.v1",
@@ -42,32 +55,69 @@ beforeEach(() => {
   }
 })
 
-const sign = (q: Quote) => signEnvelope("pactlane.quote.v1", q.providerAgentId, scout.comm, q)
+const sign = (q: Quote) =>
+  signEnvelope("pactlane.quote.v1", q.providerAgentId, scout.comm, q)
 
 describe("acceptQuote", () => {
   test("accepts a valid quote within budget", async () => {
-    const res = await acceptQuote(sign(quote), scout.comm.publicKeyHex, ctx, policy)
+    const res = await acceptQuote(
+      sign(quote),
+      scout.comm.publicKeyHex,
+      ctx,
+      policy
+    )
     expect(res.quoteHash).toBe(commit("pactlane.quote.v1", quote))
   })
 
   test("rejects duplicate nonce", async () => {
     await acceptQuote(sign(quote), scout.comm.publicKeyHex, ctx, policy)
-    await expect(acceptQuote(sign(quote), scout.comm.publicKeyHex, ctx, policy)).rejects.toThrow(/nonce/)
+    await expect(
+      acceptQuote(sign(quote), scout.comm.publicKeyHex, ctx, policy)
+    ).rejects.toThrow(/nonce/)
   })
 
   test("rejects a quote replayed on another network", async () => {
-    const mainnetQuote = { ...quote, networkPassphrase: NETWORKS.mainnet.passphrase }
-    await expect(acceptQuote(sign(mainnetQuote), scout.comm.publicKeyHex, ctx, policy)).rejects.toThrow(/network/)
+    const mainnetQuote = {
+      ...quote,
+      networkPassphrase: NETWORKS.mainnet.passphrase,
+    }
+    await expect(
+      acceptQuote(sign(mainnetQuote), scout.comm.publicKeyHex, ctx, policy)
+    ).rejects.toThrow(/network/)
   })
 
   test("rejects wrong asset, expired and over-budget quotes", async () => {
-    await expect(acceptQuote(sign({ ...quote, paymentAssetContractId: "CFAKE" }), scout.comm.publicKeyHex, ctx, policy)).rejects.toThrow(/asset/)
-    await expect(acceptQuote(sign({ ...quote, expiresAtUnix: BASE_TIME }), scout.comm.publicKeyHex, ctx, policy)).rejects.toThrow(/expired/)
-    await expect(acceptQuote(sign({ ...quote, priceAtomic: "5500000" }), scout.comm.publicKeyHex, ctx, policy)).rejects.toThrow(/budget/)
+    await expect(
+      acceptQuote(
+        sign({ ...quote, paymentAssetContractId: "CFAKE" }),
+        scout.comm.publicKeyHex,
+        ctx,
+        policy
+      )
+    ).rejects.toThrow(/asset/)
+    await expect(
+      acceptQuote(
+        sign({ ...quote, expiresAtUnix: BASE_TIME }),
+        scout.comm.publicKeyHex,
+        ctx,
+        policy
+      )
+    ).rejects.toThrow(/expired/)
+    await expect(
+      acceptQuote(
+        sign({ ...quote, priceAtomic: "5500000" }),
+        scout.comm.publicKeyHex,
+        ctx,
+        policy
+      )
+    ).rejects.toThrow(/budget/)
   })
 
   test("flags human approval threshold", async () => {
-    const res = await acceptQuote(sign(quote), scout.comm.publicKeyHex, ctx, { ...policy, humanApprovalAboveAtomic: toAtomic("0.10") })
+    const res = await acceptQuote(sign(quote), scout.comm.publicKeyHex, ctx, {
+      ...policy,
+      humanApprovalAboveAtomic: toAtomic("0.10"),
+    })
     expect(res.needsHumanApproval).toBe(true)
   })
 })
@@ -90,19 +140,39 @@ describe("validateAgreement", () => {
     nonce: "agreement-nonce-01",
     expiresAtUnix: BASE_TIME + 600,
   }
-  const signA = (a: Agreement) => signEnvelope("pactlane.negotiation.v1", a.buyerAgentId, atlas.comm, a)
+  const signA = (a: Agreement) =>
+    signEnvelope("pactlane.negotiation.v1", a.buyerAgentId, atlas.comm, a)
   const opts = { providerWallet: scout.address, acceptedQuote: quote }
 
   test("accepts an agreement bound to the quote", async () => {
-    const res = await validateAgreement(signA(agreement), atlas.comm.publicKeyHex, ctx, opts)
+    const res = await validateAgreement(
+      signA(agreement),
+      atlas.comm.publicKeyHex,
+      ctx,
+      opts
+    )
     expect(res.agreement.budgetAtomic).toBe("4000000")
   })
 
   test("rejects evaluator equal to provider", async () => {
-    await expect(validateAgreement(signA({ ...agreement, evaluatorAddress: scout.address }), atlas.comm.publicKeyHex, ctx, opts)).rejects.toThrow(/evaluator/)
+    await expect(
+      validateAgreement(
+        signA({ ...agreement, evaluatorAddress: scout.address }),
+        atlas.comm.publicKeyHex,
+        ctx,
+        opts
+      )
+    ).rejects.toThrow(/evaluator/)
   })
 
   test("rejects silent budget change", async () => {
-    await expect(validateAgreement(signA({ ...agreement, budgetAtomic: "4000001" }), atlas.comm.publicKeyHex, ctx, opts)).rejects.toThrow(/budget/)
+    await expect(
+      validateAgreement(
+        signA({ ...agreement, budgetAtomic: "4000001" }),
+        atlas.comm.publicKeyHex,
+        ctx,
+        opts
+      )
+    ).rejects.toThrow(/budget/)
   })
 })

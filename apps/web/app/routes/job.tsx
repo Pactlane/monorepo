@@ -1,21 +1,38 @@
 import { data, Link } from "react-router"
 import { ArrowLeft, Clock, Info } from "lucide-react"
-import { Card, CardContent, CardHeader, CardTitle } from "@pactlane/ui/components/card"
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "@pactlane/ui/components/card"
 import { Hash } from "@pactlane/ui/components/hash"
 import { StatusPill } from "@pactlane/ui/components/status-pill"
 import type { Route } from "./+types/job"
 import { api } from "@/lib/api.server"
 import { AgentAvatar } from "@/components/agent-avatar"
 import { JobStepper } from "@/components/job-stepper"
-import { agentHref, explorerContractUrl, explorerTxUrl, formatDate, formatUsdc } from "@/lib/format"
+import {
+  agentHref,
+  explorerContractUrl,
+  explorerTxUrl,
+  formatDate,
+  formatUsdc,
+} from "@/lib/format"
 
-export const meta: Route.MetaFunction = ({ loaderData }) => [{ title: `${loaderData?.job.title ?? "Job"} · Pactlane` }]
+export const meta: Route.MetaFunction = ({ loaderData }) => [
+  { title: `${loaderData?.job.title ?? "Job"} · Pactlane` },
+]
 
 export async function loader({ params }: Route.LoaderArgs) {
-  const job = await api().jobs.get(params.jobId).catch(() => null)
+  const job = await api()
+    .jobs.get(params.jobId)
+    .catch(() => null)
   if (!job) throw data("Job not found", { status: 404 })
   const agents = await api().discover()
-  const names = Object.fromEntries(agents.map((a) => [a.profile.agentId, a.profile.displayName]))
+  const names = Object.fromEntries(
+    agents.map((a) => [a.profile.agentId, a.profile.displayName])
+  )
   return { job, names }
 }
 
@@ -34,14 +51,19 @@ export default function JobPage({ loaderData }: Route.ComponentProps) {
   const reachedSubmitted = job.events.some((e) => e.type === "submitted")
   return (
     <div className="mx-auto max-w-6xl px-4 py-10 sm:px-6">
-      <Link to="/jobs" className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground">
+      <Link
+        to="/jobs"
+        className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground"
+      >
         <ArrowLeft className="size-3.5" /> All jobs
       </Link>
 
       <div className="mt-6 flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
         <div>
           <div className="flex items-center gap-3">
-            <h1 className="text-2xl font-semibold tracking-tight">{job.title}</h1>
+            <h1 className="text-2xl font-semibold tracking-tight">
+              {job.title}
+            </h1>
             <StatusPill status={job.status} />
           </div>
           <p className="mt-1 font-mono text-xs text-muted-foreground">
@@ -49,8 +71,12 @@ export default function JobPage({ loaderData }: Route.ComponentProps) {
           </p>
         </div>
         <div className="text-left md:text-right">
-          <div className="font-mono text-2xl font-semibold tabular-nums">{formatUsdc(job.budgetAtomic)}</div>
-          <div className="text-xs text-muted-foreground">fixed budget · Stellar USDC</div>
+          <div className="font-mono text-2xl font-semibold tabular-nums">
+            {formatUsdc(job.budgetAtomic)}
+          </div>
+          <div className="text-xs text-muted-foreground">
+            fixed budget · Stellar USDC
+          </div>
         </div>
       </div>
 
@@ -60,7 +86,8 @@ export default function JobPage({ loaderData }: Route.ComponentProps) {
 
       {job.status === "submitted" && (
         <p className="mt-4 flex items-start gap-2 rounded-lg bg-warning-soft px-4 py-3 text-sm text-warning">
-          <Info className="mt-0.5 size-4 shrink-0" /> Submitted is not completed. Funds stay in escrow until the evaluator approves on-chain.
+          <Info className="mt-0.5 size-4 shrink-0" /> Submitted is not
+          completed. Funds stay in escrow until the evaluator approves on-chain.
         </p>
       )}
 
@@ -75,18 +102,33 @@ export default function JobPage({ loaderData }: Route.ComponentProps) {
                 <li key={e.txHash} className="relative">
                   <span
                     className={`absolute top-1 -left-[29px] size-2.5 rounded-full ring-4 ring-card ${
-                      e.type === "rejected" || e.type === "expired" ? "bg-destructive" : e.type === "completed" ? "bg-success" : "bg-primary"
+                      e.type === "rejected" || e.type === "expired"
+                        ? "bg-destructive"
+                        : e.type === "completed"
+                          ? "bg-success"
+                          : "bg-primary"
                     }`}
                   />
                   <div className="flex flex-col gap-1 sm:flex-row sm:items-baseline sm:justify-between">
-                    <span className="text-sm font-medium">{EVENT_LABEL[e.type]}</span>
+                    <span className="text-sm font-medium">
+                      {EVENT_LABEL[e.type]}
+                    </span>
                     <span className="font-mono text-xs text-muted-foreground">
-                      ledger {e.ledger.toLocaleString()} · {formatDate(e.atUnix)}
+                      ledger {e.ledger.toLocaleString()} ·{" "}
+                      {formatDate(e.atUnix)}
                     </span>
                   </div>
                   <div className="mt-1.5 flex flex-wrap gap-x-4 gap-y-1">
                     <span className="text-xs text-muted-foreground">
-                      tx <Hash value={e.txHash} href={job.simulated ? undefined : explorerTxUrl(job.network, e.txHash)} />
+                      tx{" "}
+                      <Hash
+                        value={e.txHash}
+                        href={
+                          job.simulated
+                            ? undefined
+                            : explorerTxUrl(job.network, e.txHash)
+                        }
+                      />
                     </span>
                     {e.commitment && (
                       <span className="text-xs text-muted-foreground">
@@ -106,8 +148,16 @@ export default function JobPage({ loaderData }: Route.ComponentProps) {
               <CardTitle>Parties</CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
-              <Party role="Buyer" name={names[job.buyerAgentId] ?? "Buyer"} id={job.buyerAgentId} />
-              <Party role="Provider" name={names[job.providerAgentId] ?? "Provider"} id={job.providerAgentId} />
+              <Party
+                role="Buyer"
+                name={names[job.buyerAgentId] ?? "Buyer"}
+                id={job.buyerAgentId}
+              />
+              <Party
+                role="Provider"
+                name={names[job.providerAgentId] ?? "Provider"}
+                id={job.providerAgentId}
+              />
               <div className="flex items-center justify-between text-sm">
                 <span className="text-muted-foreground">Evaluator</span>
                 <Hash value={job.evaluatorAddress} head={6} tail={4} />
@@ -128,7 +178,16 @@ export default function JobPage({ loaderData }: Route.ComponentProps) {
                 <div className="flex items-center justify-between gap-3">
                   <dt className="text-muted-foreground">Escrow contract</dt>
                   <dd>
-                    <Hash value={job.contractId} head={6} tail={4} href={job.simulated ? undefined : explorerContractUrl(job.network, job.contractId)} />
+                    <Hash
+                      value={job.contractId}
+                      head={6}
+                      tail={4}
+                      href={
+                        job.simulated
+                          ? undefined
+                          : explorerContractUrl(job.network, job.contractId)
+                      }
+                    />
                   </dd>
                 </div>
               </dl>
@@ -144,13 +203,17 @@ export default function JobPage({ loaderData }: Route.ComponentProps) {
                 <span className="inline-flex items-center gap-1.5 text-muted-foreground">
                   <Clock className="size-3.5" /> Work
                 </span>
-                <span className="font-mono text-xs">{formatDate(job.workDeadlineUnix)}</span>
+                <span className="font-mono text-xs">
+                  {formatDate(job.workDeadlineUnix)}
+                </span>
               </div>
               <div className="flex items-center justify-between">
                 <span className="inline-flex items-center gap-1.5 text-muted-foreground">
                   <Clock className="size-3.5" /> Evaluation
                 </span>
-                <span className="font-mono text-xs">{formatDate(job.evaluationDeadlineUnix)}</span>
+                <span className="font-mono text-xs">
+                  {formatDate(job.evaluationDeadlineUnix)}
+                </span>
               </div>
             </CardContent>
           </Card>
@@ -162,7 +225,10 @@ export default function JobPage({ loaderData }: Route.ComponentProps) {
 
 function Party({ role, name, id }: { role: string; name: string; id: string }) {
   return (
-    <Link to={agentHref(id)} className="-m-2 flex items-center gap-3 rounded-lg p-2 transition-colors hover:bg-muted">
+    <Link
+      to={agentHref(id)}
+      className="-m-2 flex items-center gap-3 rounded-lg p-2 transition-colors hover:bg-muted"
+    >
       <AgentAvatar name={name} seed={id} className="size-8 text-xs" />
       <div className="min-w-0">
         <div className="text-sm font-medium">{name}</div>
@@ -176,7 +242,13 @@ function Row({ label, value }: { label: string; value?: string }) {
   return (
     <div className="flex items-center justify-between gap-3">
       <dt className="text-muted-foreground">{label}</dt>
-      <dd>{value ? <Hash value={value} head={14} /> : <span className="text-xs text-muted-foreground">pending</span>}</dd>
+      <dd>
+        {value ? (
+          <Hash value={value} head={14} />
+        ) : (
+          <span className="text-xs text-muted-foreground">pending</span>
+        )}
+      </dd>
     </div>
   )
 }

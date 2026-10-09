@@ -8,7 +8,12 @@ test("health reports simulation mode without secrets", async () => {
   const res = await app.request("/v1/health")
   expect(res.status).toBe(200)
   const body = (await res.json()) as Record<string, unknown>
-  expect(body).toEqual({ status: "ok", version: "0.1.0", network: "testnet", mode: "simulation" })
+  expect(body).toEqual({
+    status: "ok",
+    version: "0.1.0",
+    network: "testnet",
+    mode: "simulation",
+  })
 })
 
 test("unknown routes return json 404", async () => {
