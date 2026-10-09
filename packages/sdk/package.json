@@ -1,0 +1,26 @@
+{
+  "name": "@pactlane/sdk",
+  "version": "0.0.1",
+  "type": "module",
+  "private": true,
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "test": "bun test"
+  },
+  "dependencies": {
+    "@pactlane/core": "workspace:*",
+    "@pactlane/discovery": "workspace:*",
+    "@pactlane/evaluation": "workspace:*",
+    "@pactlane/negotiation": "workspace:*",
+    "@pactlane/storage-0g": "workspace:*"
+  },
+  "devDependencies": {
+    "@pactlane/config": "workspace:*",
+    "@pactlane/test-utils": "workspace:*",
+    "@types/bun": "latest",
+    "typescript": "^6.0.2"
+  }
+}

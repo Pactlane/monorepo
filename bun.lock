@@ -129,6 +129,23 @@
         "typescript": "^6.0.2",
       },
     },
+    "packages/sdk": {
+      "name": "@pactlane/sdk",
+      "version": "0.0.1",
+      "dependencies": {
+        "@pactlane/core": "workspace:*",
+        "@pactlane/discovery": "workspace:*",
+        "@pactlane/evaluation": "workspace:*",
+        "@pactlane/negotiation": "workspace:*",
+        "@pactlane/storage-0g": "workspace:*",
+      },
+      "devDependencies": {
+        "@pactlane/config": "workspace:*",
+        "@pactlane/test-utils": "workspace:*",
+        "@types/bun": "latest",
+        "typescript": "^6.0.2",
+      },
+    },
     "packages/storage-0g": {
       "name": "@pactlane/storage-0g",
       "version": "0.0.1",
@@ -393,6 +410,8 @@
     "@pactlane/evaluation": ["@pactlane/evaluation@workspace:packages/evaluation"],
 
     "@pactlane/negotiation": ["@pactlane/negotiation@workspace:packages/negotiation"],
+
+    "@pactlane/sdk": ["@pactlane/sdk@workspace:packages/sdk"],
 
     "@pactlane/storage-0g": ["@pactlane/storage-0g@workspace:packages/storage-0g"],
 

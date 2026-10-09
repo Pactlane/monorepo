@@ -44,6 +44,7 @@ export function sha256Ref(data: Uint8Array | string): Sha256Ref {
 
 export const DOMAINS = {
   taskSpec: "pactlane.task.v1",
+  rfq: "pactlane.rfq.v1",
   quote: "pactlane.quote.v1",
   agreement: "pactlane.negotiation.v1",
   deliverable: "pactlane.deliverable.v1",
