@@ -3,10 +3,12 @@ import { cors } from "hono/cors"
 import { secureHeaders } from "hono/secure-headers"
 import { bodyLimit } from "hono/body-limit"
 import type { Env } from "@pactlane/config"
+import { createSimulationRepository, type Repository } from "./repository"
+import { agentRoutes, jobRoutes } from "./routes"
 
 export const VERSION = "0.1.0"
 
-export function createApp(env: Env) {
+export function createApp(env: Env, repo: Repository = createSimulationRepository()) {
   const app = new Hono().basePath("/v1")
 
   app.use("*", secureHeaders())
@@ -21,6 +23,9 @@ export function createApp(env: Env) {
       mode: env.MOCK_EXTERNALS ? "simulation" : "live",
     })
   )
+
+  app.route("/agents", agentRoutes(repo))
+  app.route("/jobs", jobRoutes(repo))
 
   app.notFound((c) => c.json({ error: "not_found" }, 404))
   app.onError((err, c) => {

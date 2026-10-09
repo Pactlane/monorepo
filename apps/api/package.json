@@ -12,6 +12,8 @@
   "dependencies": {
     "@pactlane/config": "workspace:*",
     "@pactlane/core": "workspace:*",
+    "@pactlane/discovery": "workspace:*",
+    "@pactlane/test-utils": "workspace:*",
     "hono": "^4.9.0",
     "zod": "^4.6.5"
   },
