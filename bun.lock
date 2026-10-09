@@ -46,6 +46,18 @@
         "typescript": "^6.0.2",
       },
     },
+    "packages/core": {
+      "name": "@pactlane/core",
+      "version": "0.0.1",
+      "dependencies": {
+        "zod": "^4.6.5",
+      },
+      "devDependencies": {
+        "@pactlane/config": "workspace:*",
+        "@types/bun": "latest",
+        "typescript": "^6.0.2",
+      },
+    },
     "packages/ui": {
       "name": "@pactlane/ui",
       "version": "0.0.0",
@@ -261,6 +273,8 @@
     "@oxc-project/types": ["@oxc-project/types@0.153.0", "", {}, "sha512-jSNrRIyvPVLL5E1z/tS5zLAprosGz/FuI1PWwEOz59j3E4TTTzSpqKb/RDGqJhhW0QHYISGXxq582wGx6T11Tw=="],
 
     "@pactlane/config": ["@pactlane/config@workspace:packages/config"],
+
+    "@pactlane/core": ["@pactlane/core@workspace:packages/core"],
 
     "@pactlane/ui": ["@pactlane/ui@workspace:packages/ui"],
 
