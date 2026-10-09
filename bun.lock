@@ -58,6 +58,20 @@
         "typescript": "^6.0.2",
       },
     },
+    "packages/discovery": {
+      "name": "@pactlane/discovery",
+      "version": "0.0.1",
+      "dependencies": {
+        "@pactlane/core": "workspace:*",
+        "zod": "^4.6.5",
+      },
+      "devDependencies": {
+        "@pactlane/config": "workspace:*",
+        "@pactlane/test-utils": "workspace:*",
+        "@types/bun": "latest",
+        "typescript": "^6.0.2",
+      },
+    },
     "packages/evaluation": {
       "name": "@pactlane/evaluation",
       "version": "0.0.1",
@@ -74,6 +88,20 @@
     },
     "packages/negotiation": {
       "name": "@pactlane/negotiation",
+      "version": "0.0.1",
+      "dependencies": {
+        "@pactlane/core": "workspace:*",
+        "zod": "^4.6.5",
+      },
+      "devDependencies": {
+        "@pactlane/config": "workspace:*",
+        "@pactlane/test-utils": "workspace:*",
+        "@types/bun": "latest",
+        "typescript": "^6.0.2",
+      },
+    },
+    "packages/storage-0g": {
+      "name": "@pactlane/storage-0g",
       "version": "0.0.1",
       "dependencies": {
         "@pactlane/core": "workspace:*",
@@ -321,9 +349,13 @@
 
     "@pactlane/core": ["@pactlane/core@workspace:packages/core"],
 
+    "@pactlane/discovery": ["@pactlane/discovery@workspace:packages/discovery"],
+
     "@pactlane/evaluation": ["@pactlane/evaluation@workspace:packages/evaluation"],
 
     "@pactlane/negotiation": ["@pactlane/negotiation@workspace:packages/negotiation"],
+
+    "@pactlane/storage-0g": ["@pactlane/storage-0g@workspace:packages/storage-0g"],
 
     "@pactlane/test-utils": ["@pactlane/test-utils@workspace:packages/test-utils"],
 
