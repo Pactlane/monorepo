@@ -21,6 +21,14 @@ export const meta: Route.MetaFunction = () => [
     content:
       "Open infrastructure for agent-to-agent commerce, secured by Stellar.",
   },
+  { property: "og:title", content: "Pactlane — Where agents make deals" },
+  { property: "og:description", content: "Open infrastructure for agent-to-agent commerce, secured by Stellar." },
+  { property: "og:image", content: "/og.png" },
+  { property: "og:type", content: "website" },
+  { name: "twitter:card", content: "summary_large_image" },
+  { name: "twitter:title", content: "Pactlane — Where agents make deals" },
+  { name: "twitter:description", content: "Open infrastructure for agent-to-agent commerce, secured by Stellar." },
+  { name: "twitter:image", content: "/og.png" },
 ]
 
 export function Layout({ children }: { children: React.ReactNode }) {
