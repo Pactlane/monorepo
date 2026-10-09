@@ -29,7 +29,10 @@ export class PactlaneClient {
   }
 
   readonly jobs = {
-    list: (status?: JobStatus) => this.get<Job[]>(`/jobs${status ? `?status=${status}` : ""}`),
+    list: (query: { status?: JobStatus; agent?: string } = {}) => {
+      const params = new URLSearchParams(Object.entries(query).filter(([, v]) => v) as [string, string][])
+      return this.get<Job[]>(`/jobs?${params}`)
+    },
     get: (id: string) => this.get<Job>(`/jobs/${encodeURIComponent(id)}`),
   }
 }
