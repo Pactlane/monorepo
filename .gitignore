@@ -19,3 +19,9 @@ dist
 # debug
 npm-debug.log*
 pnpm-debug.log*
+
+# local planning docs
+implementation_docs.md
+
+# env
+!.env.example
