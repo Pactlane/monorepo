@@ -12,9 +12,15 @@ export function loader() {
 export default function Shell({ loaderData }: Route.ComponentProps) {
   return (
     <div className="flex min-h-svh flex-col">
+      <a
+        href="#main"
+        className="sr-only z-50 rounded-md bg-background px-3 py-2 text-sm font-medium text-foreground shadow focus:not-sr-only focus:fixed focus:top-4 focus:left-4"
+      >
+        Skip to content
+      </a>
       {loaderData.simulation && <SimulationBanner />}
       <SiteHeader />
-      <main className="flex-1">
+      <main id="main" className="flex-1">
         <Outlet />
       </main>
       <SiteFooter />
