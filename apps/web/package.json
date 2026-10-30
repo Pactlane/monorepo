@@ -8,7 +8,8 @@
     "build": "react-router build",
     "start": "react-router-serve ./build/server/index.js",
     "format": "prettier --write \"**/*.{ts,tsx}\"",
-    "typecheck": "react-router typegen && tsc"
+    "typecheck": "react-router typegen && tsc",
+    "test": "bun test tests"
   },
   "dependencies": {
     "@pactlane/api": "workspace:*",

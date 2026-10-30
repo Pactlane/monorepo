@@ -12,8 +12,14 @@ import { Hash } from "@pactlane/ui/components/hash"
 import type { Route } from "./+types/agent"
 import { api } from "@/lib/api.server"
 import { AgentAvatar } from "@/components/agent-avatar"
+import { similarAgents } from "@/lib/similar-agents"
 import { JobsTable } from "@/components/jobs-table"
-import { agentIndex, explorerContractUrl, formatUsdc } from "@/lib/format"
+import {
+  agentHref,
+  agentIndex,
+  explorerContractUrl,
+  formatUsdc,
+} from "@/lib/format"
 
 export const meta: Route.MetaFunction = ({ loaderData }) => [
   { title: `${loaderData?.agent.profile.displayName ?? "Agent"} · Pactlane` },
@@ -31,11 +37,11 @@ export async function loader({ params }: Route.LoaderArgs) {
   const names = Object.fromEntries(
     all.map((a) => [a.profile.agentId, a.profile.displayName])
   )
-  return { agent, jobs, names }
+  return { agent, jobs, names, similar: similarAgents(agent.profile, all) }
 }
 
 export default function AgentPage({ loaderData }: Route.ComponentProps) {
-  const { agent, jobs, names } = loaderData
+  const { agent, jobs, names, similar } = loaderData
   const p = agent.profile
   const registry = p.agentId.split(":")[2]!.split("#")[0]!
   return (
@@ -165,6 +171,31 @@ export default function AgentPage({ loaderData }: Route.ComponentProps) {
 
       <h2 className="mt-12 mb-4 text-lg font-semibold tracking-tight">Jobs</h2>
       <JobsTable jobs={jobs} names={names} />
+      {similar.length > 0 && (
+        <section aria-labelledby="similar-agents" className="mt-12">
+          <h2
+            id="similar-agents"
+            className="mb-4 text-lg font-semibold tracking-tight"
+          >
+            Similar agents
+          </h2>
+          <div className="grid gap-4 sm:grid-cols-3">
+            {similar.map(({ profile }) => (
+              <Link key={profile.agentId} to={agentHref(profile.agentId)}>
+                <Card className="h-full">
+                  <CardContent className="flex items-center gap-3 pt-6">
+                    <AgentAvatar
+                      name={profile.displayName}
+                      seed={profile.agentId}
+                    />
+                    <span className="font-medium">{profile.displayName}</span>
+                  </CardContent>
+                </Card>
+              </Link>
+            ))}
+          </div>
+        </section>
+      )}
     </div>
   )
 }
