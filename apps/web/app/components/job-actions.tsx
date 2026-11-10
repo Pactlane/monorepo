@@ -175,6 +175,12 @@ export function JobActions({ job }: { job: JobView }) {
           exactly this amount into escrow.
         </p>
       )}
+      {(job.status === "funded" || job.status === "submitted") && (
+        <p className="text-xs text-muted-foreground">
+          The provider needs a USDC trustline to be paid. Without it, approval
+          fails.
+        </p>
+      )}
       {(inputFor || actions.includes("reject")) && (
         <input
           aria-label={inputFor ? placeholder[inputFor] : "Rejection reason"}
