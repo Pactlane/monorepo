@@ -139,20 +139,60 @@ describe("toKernelJob", () => {
 })
 
 describe("KernelClient", () => {
-  test("reads the kernel at the testnet address and lists newest first", async () => {
+  function pagedKernel(count: number) {
+    const pages: [bigint, number][] = []
     const fake = fakeRpc((method, args) => {
-      if (method === "job_count") return nativeToScVal(3n, { type: "u64" })
+      if (method === "job_count") {
+        return nativeToScVal(BigInt(count), { type: "u64" })
+      }
+      if (method === "get_jobs") {
+        const start = scValToNative(args[0]!) as bigint
+        const limit = Math.min(Number(scValToNative(args[1]!)), 50)
+        pages.push([start, limit])
+        const jobs: xdr.ScVal[] = []
+        for (
+          let id = start < 1n ? 1n : start;
+          id <= BigInt(count) && jobs.length < limit;
+          id++
+        ) {
+          jobs.push(jobScVal({ id: nativeToScVal(id, { type: "u64" }) }))
+        }
+        return xdr.ScVal.scvVec(jobs)
+      }
       const id = scValToNative(args[0]!) as bigint
-      if (id === 2n) return "HostError: Error(Contract, #1)"
+      if (id > BigInt(count)) return "HostError: Error(Contract, #1)"
       return jobScVal({ id: nativeToScVal(id, { type: "u64" }) })
     })
-    const kernel = new KernelClient({ rpc: fake.rpc })
+    return { fake, pages, kernel: new KernelClient({ rpc: fake.rpc }) }
+  }
+
+  test("lists newest first through get_jobs at the testnet kernel", async () => {
+    const { fake, pages, kernel } = pagedKernel(3)
     const jobs = await kernel.listJobs()
-    expect(jobs.map((j) => j.id)).toEqual([3n, 1n])
+    expect(jobs.map((j) => j.id)).toEqual([3n, 2n, 1n])
+    expect(pages).toEqual([[1n, 3]])
     expect(new Set(fake.calls.map((c) => c.contract))).toEqual(
       new Set([PACTLANE_TESTNET.kernel])
     )
-    expect(await kernel.getJob(2n)).toBeNull()
+    expect(await kernel.getJob(4n)).toBeNull()
+  })
+
+  test("pages backwards in chunks of at most 50", async () => {
+    const { pages, kernel } = pagedKernel(120)
+    const jobs = await kernel.listJobs({ limit: 75 })
+    expect(jobs.map((j) => Number(j.id))).toEqual(
+      Array.from({ length: 75 }, (_, i) => 120 - i)
+    )
+    expect(pages).toEqual([
+      [71n, 50],
+      [46n, 25],
+    ])
+  })
+
+  test("an empty kernel lists nothing without calling get_jobs", async () => {
+    const { pages, kernel } = pagedKernel(0)
+    expect(await kernel.listJobs()).toEqual([])
+    expect(pages).toHaveLength(0)
   })
 
   test("rethrows errors other than NotFound", async () => {

@@ -131,8 +131,7 @@ function hashRef(value: unknown): Sha256Ref | null {
   return `sha256:${hex(value)}`
 }
 
-export function toKernelJob(value: xdr.ScVal): KernelJob {
-  const raw = scValToNative(value) as Record<string, unknown>
+function jobFromNative(raw: Record<string, unknown>): KernelJob {
   const status = JOB_STATUSES[Number(raw.state)]
   if (!status) throw new Error(`Unknown job state ${String(raw.state)}`)
   return {
@@ -148,6 +147,18 @@ export function toKernelJob(value: xdr.ScVal): KernelJob {
     reason: hashRef(raw.reason),
   }
 }
+
+export function toKernelJob(value: xdr.ScVal): KernelJob {
+  return jobFromNative(scValToNative(value) as Record<string, unknown>)
+}
+
+export function toKernelJobs(value: xdr.ScVal): KernelJob[] {
+  const raw = scValToNative(value)
+  if (!Array.isArray(raw)) throw new Error("Expected a list of jobs")
+  return raw.map((job) => jobFromNative(job as Record<string, unknown>))
+}
+
+export const MAX_JOBS_PAGE = 50
 
 function u64(id: bigint): xdr.ScVal {
   if (id <= 0n) throw new RangeError("Job ids start at 1")
@@ -202,14 +213,30 @@ export class KernelClient {
     }
   }
 
+  async getJobs(start: bigint, limit = MAX_JOBS_PAGE): Promise<KernelJob[]> {
+    if (start < 1n) throw new RangeError("Job ids start at 1")
+    const size = Math.max(1, Math.min(Math.trunc(limit), MAX_JOBS_PAGE))
+    return toKernelJobs(
+      await this.read("get_jobs", [
+        nativeToScVal(start, { type: "u64" }),
+        xdr.ScVal.scvU32(size),
+      ])
+    )
+  }
+
   async listJobs({ limit = 50 }: { limit?: number } = {}): Promise<
     KernelJob[]
   > {
-    const count = await this.jobCount()
-    const ids: bigint[] = []
-    for (let id = count; id >= 1n && ids.length < limit; id--) ids.push(id)
-    const jobs = await Promise.all(ids.map((id) => this.getJob(id)))
-    return jobs.filter((j): j is KernelJob => j !== null)
+    const jobs: KernelJob[] = []
+    let end = await this.jobCount()
+    while (end >= 1n && jobs.length < limit) {
+      const size = BigInt(Math.min(MAX_JOBS_PAGE, limit - jobs.length))
+      const start = end - size + 1n > 1n ? end - size + 1n : 1n
+      const page = await this.getJobs(start, Number(end - start + 1n))
+      jobs.push(...page.filter((j) => j.id <= end).reverse())
+      end = start - 1n
+    }
+    return jobs
   }
 }
 
