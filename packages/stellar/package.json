@@ -12,6 +12,7 @@
   },
   "dependencies": {
     "@pactlane/config": "workspace:*",
+    "@pactlane/core": "workspace:*",
     "@stellar/stellar-sdk": "~17.4.0"
   },
   "devDependencies": {
