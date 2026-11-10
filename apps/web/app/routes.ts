@@ -15,4 +15,5 @@ export default [
     route("jobs/:jobId", "routes/job.tsx"),
   ]),
   route("api/tx", "routes/api.tx.ts"),
+  route("api/balance", "routes/api.balance.ts"),
 ] satisfies RouteConfig

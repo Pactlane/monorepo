@@ -2,6 +2,9 @@ import {
   KernelClient,
   PACTLANE_TESTNET,
   SimulationError,
+  addressToScVal,
+  sacContractId,
+  simulateRead,
   contractError,
   createRpc,
   kernelArgs,
@@ -163,6 +166,11 @@ export function describeError(error: unknown): string {
   if (known) {
     return FRIENDLY[known.name] ?? `Contract error #${known.code}`
   }
+  if (
+    /fetch failed|ECONNREFUSED|ENOTFOUND|ETIMEDOUT|Cannot reach/i.test(message)
+  ) {
+    return "Could not reach Stellar testnet. Try again in a moment."
+  }
   if (/Account not found/i.test(message)) {
     return "This wallet has no testnet account yet. Fund it with Friendbot first."
   }
@@ -221,4 +229,39 @@ export async function submitSigned(signedXdr: string): Promise<SubmitView> {
     }
   }
   return { status: result.status, hash: result.hash }
+}
+
+const XLM_SAC = sacContractId("XLM", undefined, DEPLOYMENT.networkPassphrase)
+
+export interface BalancesView {
+  usdc: string | null
+  xlm: string | null
+}
+
+async function sacBalance(token: string, address: string) {
+  try {
+    const value = await simulateRead(
+      await server(),
+      DEPLOYMENT.networkPassphrase,
+      token,
+      "balance",
+      [addressToScVal(address)]
+    )
+    return String(scValToNative(value))
+  } catch (error) {
+    if (
+      contractError(error instanceof Error ? error.message : "")?.code === 13
+    ) {
+      return null
+    }
+    throw error
+  }
+}
+
+export async function getBalances(address: string): Promise<BalancesView> {
+  const [usdc, xlm] = await Promise.all([
+    sacBalance(DEPLOYMENT.token, address),
+    sacBalance(XLM_SAC, address),
+  ])
+  return { usdc, xlm }
 }
