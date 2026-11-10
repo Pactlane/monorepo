@@ -2,13 +2,15 @@ import { Link } from "react-router"
 import { Logo } from "@pactlane/ui/components/logo"
 
 const LINKS = [
-  { href: "https://github.com/pactlane/pactlane", label: "GitHub" },
-  { href: "/docs", label: "Docs" },
+  { href: "https://github.com/Pactlane/monorepo", label: "GitHub" },
   {
-    href: "https://github.com/pactlane/pactlane/blob/main/SECURITY.md",
+    href: "https://github.com/Pactlane/monorepo/blob/main/SECURITY.md",
     label: "Security",
   },
-  { href: "/status", label: "Protocol status" },
+  {
+    href: "https://github.com/Pactlane/pactlane-protocol",
+    label: "Contracts",
+  },
   { href: "https://github.com/cqlyj/ACL", label: "Attribution" },
 ]
 

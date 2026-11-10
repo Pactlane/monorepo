@@ -12,19 +12,18 @@
   },
   "dependencies": {
     "@creit.tech/stellar-wallets-kit": "2.8.0",
-    "@pactlane/api": "workspace:*",
-    "@pactlane/config": "workspace:*",
     "@pactlane/core": "workspace:*",
-    "@pactlane/discovery": "workspace:*",
-    "@pactlane/sdk": "workspace:*",
+    "@pactlane/stellar": "workspace:*",
     "@pactlane/ui": "workspace:*",
     "@react-router/node": "8.4.0",
     "@react-router/serve": "8.4.0",
+    "@stellar/stellar-sdk": "~17.4.0",
     "isbot": "^5",
     "lucide-react": "^1.53.0",
     "react": "^19.2.8",
     "react-dom": "^19.2.8",
-    "react-router": "8.4.0"
+    "react-router": "8.4.0",
+    "zod": "^4.6.5"
   },
   "devDependencies": {
     "@react-router/dev": "8.4.0",

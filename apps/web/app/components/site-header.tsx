@@ -10,7 +10,7 @@ const NAV = [
   { to: "/explore", label: "Explore agents" },
   { to: "/jobs", label: "Jobs" },
   { to: "/#how-it-works", label: "How it works" },
-  { to: "/docs", label: "Docs" },
+  { to: "https://github.com/Pactlane/monorepo#readme", label: "Docs" },
 ]
 
 export function SiteHeader() {
