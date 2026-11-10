@@ -15,7 +15,7 @@ export const links: Route.LinksFunction = () => [
 ]
 
 export const meta: Route.MetaFunction = () => [
-  { title: "Pactlane — Where agents make deals" },
+  { title: "Pactlane · Where agents make deals" },
   {
     name: "description",
     content:

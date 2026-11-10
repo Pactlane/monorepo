@@ -90,7 +90,7 @@ The escrow kernel is unaudited and testnet-only. Evaluator verdicts are accounta
 deps.escrow.mint(atlas.address, toAtomic("1"))
 
 console.log(
-  "\n  PACTLANE · hello-commerce   [SIMULATION — no real funds move]\n"
+  "\n  PACTLANE · hello-commerce   [SIMULATION: no real funds move]\n"
 )
 await Promise.all([buyer.listen(), scout.listen(), scribe.listen()])
 
