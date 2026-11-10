@@ -84,6 +84,21 @@
         "typescript": "^6.0.2",
       },
     },
+    "packages/contracts": {
+      "name": "@pactlane/contracts",
+      "version": "0.0.1",
+      "dependencies": {
+        "@pactlane/config": "workspace:*",
+        "@pactlane/core": "workspace:*",
+        "@pactlane/stellar": "workspace:*",
+        "@stellar/stellar-sdk": "~17.4.0",
+        "zod": "^4.6.5",
+      },
+      "devDependencies": {
+        "@types/bun": "latest",
+        "typescript": "^6.0.2",
+      },
+    },
     "packages/core": {
       "name": "@pactlane/core",
       "version": "0.0.1",
@@ -510,6 +525,8 @@
     "@pactlane/api": ["@pactlane/api@workspace:apps/api"],
 
     "@pactlane/config": ["@pactlane/config@workspace:packages/config"],
+
+    "@pactlane/contracts": ["@pactlane/contracts@workspace:packages/contracts"],
 
     "@pactlane/core": ["@pactlane/core@workspace:packages/core"],
 
@@ -2009,6 +2026,8 @@
 
     "@noble/curves/@noble/hashes": ["@noble/hashes@1.8.0", "", {}, "sha512-jCs9ldd7NwzpgXDIf6P3+NrHh9/sD6CQdxHyjQI+h/6rDNo88ypBxxz45UDuZHz9r3tNz7N/VInSVoVdtXEI4A=="],
 
+    "@pactlane/contracts/@types/bun": ["@types/bun@1.4.4", "", { "dependencies": { "bun-types": "1.4.4" } }, "sha512-9wkRDXUXK124pEnAutE6n/l18j+i9GC5IAHK8TmX/2nlySETmky0OU6yL5U8pW1AoKh++AN9auDCr647BfurjQ=="],
+
     "@pactlane/stellar/@types/bun": ["@types/bun@1.4.4", "", { "dependencies": { "bun-types": "1.4.4" } }, "sha512-9wkRDXUXK124pEnAutE6n/l18j+i9GC5IAHK8TmX/2nlySETmky0OU6yL5U8pW1AoKh++AN9auDCr647BfurjQ=="],
 
     "@reown/appkit/semver": ["semver@7.7.2", "", { "bin": { "semver": "bin/semver.js" } }, "sha512-RF0Fw+rO5AMf9MAyaRXI4AV0Ulj5lMHqVxxdSgiVbixSCXoEmmX/jk0CuJw4+3SqroYO9VoUh+HcuJivvtJemA=="],
@@ -2384,6 +2403,8 @@
     "@esbuild-kit/core-utils/esbuild/@esbuild/win32-x64": ["@esbuild/win32-x64@0.18.20", "", { "os": "win32", "cpu": "x64" }, "sha512-kTdfRcSiDfQca/y9QIkng02avJ+NCaQvrMejlsB3RRv5sE9rRoeBPISaZpKxHELzRxZyLvNts1P27W3wV+8geQ=="],
 
     "@near-js/crypto/@noble/curves/@noble/hashes": ["@noble/hashes@1.7.1", "", {}, "sha512-B8XBPsn4vT/KJAGqDzbwztd+6Yte3P4V7iafm24bxgDe/mlRuK6xmWPuCNrKt2vDafZ8MfJLlchDG/vYafQEjQ=="],
+
+    "@pactlane/contracts/@types/bun/bun-types": ["bun-types@1.4.4", "", { "dependencies": { "@types/node": "*", "undici-types": "*" } }, "sha512-yjrJh5oGX7mMPKGd19YXyIjmEuj4G4zNC30bs7PM9Az7NQ3ndF3j6hbeRdvJTRQEhJ/FYQwW0a2moweEi2hMxQ=="],
 
     "@pactlane/stellar/@types/bun/bun-types": ["bun-types@1.4.4", "", { "dependencies": { "@types/node": "*", "undici-types": "*" } }, "sha512-yjrJh5oGX7mMPKGd19YXyIjmEuj4G4zNC30bs7PM9Az7NQ3ndF3j6hbeRdvJTRQEhJ/FYQwW0a2moweEi2hMxQ=="],
 
