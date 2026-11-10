@@ -10,7 +10,7 @@ import {
   type KernelCall,
   type KernelJob,
 } from "@pactlane/stellar"
-import { scValToNative, type rpc } from "@stellar/stellar-sdk"
+import { scValToNative, xdr, type rpc } from "@stellar/stellar-sdk"
 import type { JobStatus } from "@pactlane/core/job"
 
 export const DEPLOYMENT = PACTLANE_TESTNET
@@ -157,7 +157,12 @@ const FRIENDLY: Record<string, string> = {
 export function describeError(error: unknown): string {
   const message = error instanceof Error ? error.message : String(error)
   const known = contractError(message)
-  if (known) return FRIENDLY[known.name] ?? `Contract error ${known.name}`
+  if (known?.code === 13) {
+    return "Not enough USDC, or the wallet has no USDC trustline."
+  }
+  if (known) {
+    return FRIENDLY[known.name] ?? `Contract error #${known.code}`
+  }
   if (/Account not found/i.test(message)) {
     return "This wallet has no testnet account yet. Fund it with Friendbot first."
   }
@@ -170,6 +175,9 @@ export function describeError(error: unknown): string {
   return message
 }
 
+const OTHER_SIGNER =
+  "Your wallet is not the party who must sign this action on this job."
+
 export async function prepareKernelCall(source: string, call: KernelCall) {
   const prepared = await prepareInvoke({
     rpc: await server(),
@@ -179,6 +187,12 @@ export async function prepareKernelCall(source: string, call: KernelCall) {
     method: call.method,
     args: kernelArgs(call),
   })
+  const needsOtherSigner = prepared.authEntries.some(
+    (entry) =>
+      xdr.SorobanAuthorizationEntry.fromXDR(entry, "base64").credentials
+        .type !== "sorobanCredentialsSourceAccount"
+  )
+  if (needsOtherSigner) throw new Error(OTHER_SIGNER)
   return {
     xdr: prepared.xdr,
     minResourceFee: prepared.minResourceFee.toString(),

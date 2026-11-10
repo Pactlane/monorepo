@@ -53,7 +53,7 @@ export function JobsTable({
                   to={`/jobs/${j.id}`}
                   className="font-mono font-medium hover:underline focus-visible:underline focus-visible:outline-none"
                 >
-                  #{j.id}
+                  {`#${j.id}`}
                 </Link>
               </td>
               <td className="px-5 py-3">
