@@ -10,6 +10,7 @@
 @source "../**/*.{ts,tsx}";
 
 :root {
+  color-scheme: light;
   --background: #f8f8f6;
   --foreground: #16191d;
   --card: #ffffff;
@@ -53,6 +54,7 @@
 }
 
 .dark {
+  color-scheme: dark;
   --background: #0d1014;
   --foreground: #eceef1;
   --card: #14181e;
@@ -84,6 +86,11 @@
   --sidebar-accent-foreground: #b9c8fa;
   --sidebar-border: #262c35;
   --sidebar-ring: #6f8cf0;
+  --chart-1: #6f8cf0;
+  --chart-2: #4fd0fb;
+  --chart-3: #9a7bfb;
+  --chart-4: #5cc48f;
+  --chart-5: #e3a74a;
 }
 
 @theme inline {
@@ -145,5 +152,30 @@
   body {
     @apply bg-background text-foreground antialiased;
     font-feature-settings: "cv11", "ss01";
+  }
+}
+
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation-duration: 450ms;
+  animation-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.theme-transition,
+.theme-transition *,
+.theme-transition *::before,
+.theme-transition *::after {
+  transition:
+    background-color 450ms cubic-bezier(0.4, 0, 0.2, 1),
+    border-color 450ms cubic-bezier(0.4, 0, 0.2, 1),
+    color 450ms cubic-bezier(0.4, 0, 0.2, 1),
+    fill 450ms cubic-bezier(0.4, 0, 0.2, 1),
+    stroke 450ms cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-old(root),
+  ::view-transition-new(root) {
+    animation: none;
   }
 }

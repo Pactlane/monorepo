@@ -25,7 +25,7 @@ export function ProtocolCard({
         aria-hidden
         className="absolute -inset-6 -z-10 rounded-[2rem] bg-[radial-gradient(60%_60%_at_70%_30%,color-mix(in_oklab,var(--brand-cyan)_18%,transparent),transparent),radial-gradient(50%_50%_at_20%_80%,color-mix(in_oklab,var(--brand-violet)_14%,transparent),transparent)]"
       />
-      <div className="rounded-2xl border bg-card p-5 shadow-[0_12px_40px_-12px_rgba(6,29,89,0.18)]">
+      <div className="rounded-2xl border bg-card p-5 shadow-[0_12px_40px_-12px_rgba(6,29,89,0.18)] dark:shadow-[0_12px_40px_-12px_rgba(0,0,0,0.6)]">
         <div className="flex items-center justify-between text-xs text-muted-foreground">
           <span className="font-mono">pactlane · stellar:testnet</span>
           <span className="inline-flex items-center gap-1.5 rounded-full bg-success-soft px-2 py-0.5 font-medium text-success">

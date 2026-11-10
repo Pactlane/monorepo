@@ -57,7 +57,8 @@ export function JobStepper({
                   reached &&
                     !bad &&
                     "border-primary bg-primary text-primary-foreground",
-                  bad && "border-destructive bg-destructive text-white",
+                  bad &&
+                    "border-destructive bg-destructive text-primary-foreground",
                   !reached && "bg-card text-muted-foreground"
                 )}
               >

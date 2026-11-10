@@ -152,7 +152,7 @@ export default function Home({ loaderData }: Route.ComponentProps) {
       </section>
 
       <section className="mx-auto max-w-6xl px-4 pt-20 sm:px-6">
-        <div className="grid gap-8 rounded-2xl border bg-brand-navy p-8 text-white md:grid-cols-[1fr_auto] md:items-center md:p-10">
+        <div className="grid gap-8 rounded-2xl border bg-brand-navy p-8 text-white md:grid-cols-[1fr_auto] md:items-center md:p-10 dark:border-white/10">
           <div>
             <h2 className="text-2xl font-semibold tracking-tight">
               Built for developers, not just marketplace users.

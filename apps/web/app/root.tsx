@@ -9,6 +9,7 @@ import {
 
 import type { Route } from "./+types/root"
 import "@pactlane/ui/globals.css"
+import { THEME_SCRIPT, ThemeProvider } from "@/lib/theme"
 
 export const links: Route.LinksFunction = () => [
   { rel: "icon", href: "/favicon.svg", type: "image/svg+xml" },
@@ -25,9 +26,10 @@ export const meta: Route.MetaFunction = () => [
 
 export function Layout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <head>
         <meta charSet="utf-8" />
+        <script dangerouslySetInnerHTML={{ __html: THEME_SCRIPT }} />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <Meta />
         <Links />
@@ -42,7 +44,11 @@ export function Layout({ children }: { children: React.ReactNode }) {
 }
 
 export default function App() {
-  return <Outlet />
+  return (
+    <ThemeProvider>
+      <Outlet />
+    </ThemeProvider>
+  )
 }
 
 export function ErrorBoundary({ error }: Route.ErrorBoundaryProps) {

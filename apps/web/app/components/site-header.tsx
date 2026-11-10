@@ -4,6 +4,7 @@ import { Menu, X } from "lucide-react"
 import { Button } from "@pactlane/ui/components/button"
 import { Logo } from "@pactlane/ui/components/logo"
 import { cn } from "@pactlane/ui/lib/utils"
+import { ModeToggle } from "@/components/mode-toggle"
 import { WalletButton } from "@/components/wallet-button"
 
 const NAV = [
@@ -44,13 +45,14 @@ export function SiteHeader() {
             </NavLink>
           ))}
         </nav>
-        <div className="ml-auto hidden md:block">
-          <WalletButton />
+        <div className="ml-auto flex items-center gap-1.5">
+          <ModeToggle />
+          <WalletButton className="hidden md:inline-flex" />
         </div>
         <Button
           variant="ghost"
           size="icon"
-          className="ml-auto md:hidden"
+          className="md:hidden"
           aria-label={open ? "Close menu" : "Open menu"}
           aria-expanded={open}
           onClick={() => setOpen(!open)}
@@ -70,7 +72,9 @@ export function SiteHeader() {
               {n.label}
             </Link>
           ))}
-          <WalletButton className="mt-3 items-start border-t pt-3" />
+          <div className="mt-3 border-t pt-3">
+            <WalletButton className="items-start" />
+          </div>
         </nav>
       )}
     </header>
