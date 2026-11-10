@@ -1,9 +1,10 @@
-import { useCallback, useEffect, useState } from "react"
+import { useEffect } from "react"
 import { AlertTriangle, LoaderCircle, LogOut, Wallet } from "lucide-react"
 import { Badge } from "@pactlane/ui/components/badge"
 import { Button } from "@pactlane/ui/components/button"
 import { Hash } from "@pactlane/ui/components/hash"
 import { cn } from "@pactlane/ui/lib/utils"
+import { useWallet } from "@/lib/wallet-store"
 import {
   APP_NETWORK,
   connectWallet,
@@ -11,65 +12,24 @@ import {
   isWrongNetwork,
   refreshNetwork,
   restoreWallet,
-  walletErrorMessage,
-  type WalletSession,
 } from "@/lib/wallet.client"
 
-type Status = "idle" | "connecting" | "connected"
-
 export function WalletButton({ className }: { className?: string }) {
-  const [status, setStatus] = useState<Status>("idle")
-  const [session, setSession] = useState<WalletSession>()
-  const [error, setError] = useState<string>()
+  const wallet = useWallet()
 
   useEffect(() => {
-    let active = true
-    restoreWallet()
-      .then((restored) => {
-        if (active && restored) {
-          setSession(restored)
-          setStatus("connected")
-        }
-      })
-      .catch(() => {})
-    return () => {
-      active = false
-    }
+    restoreWallet().catch(() => {})
   }, [])
 
   useEffect(() => {
-    if (status !== "connected") return
-    const onFocus = () => {
-      refreshNetwork()
-        .then((networkPassphrase) =>
-          setSession((s) => (s ? { ...s, networkPassphrase } : s))
-        )
-        .catch(() => {})
-    }
+    if (wallet.status !== "connected") return
+    const onFocus = () => void refreshNetwork().catch(() => {})
     window.addEventListener("focus", onFocus)
     return () => window.removeEventListener("focus", onFocus)
-  }, [status])
+  }, [wallet.status])
 
-  const connect = useCallback(async () => {
-    setError(undefined)
-    setStatus("connecting")
-    try {
-      setSession(await connectWallet())
-      setStatus("connected")
-    } catch (e) {
-      setError(walletErrorMessage(e))
-      setStatus("idle")
-    }
-  }, [])
-
-  const disconnect = useCallback(async () => {
-    await disconnectWallet().catch(() => {})
-    setSession(undefined)
-    setStatus("idle")
-  }, [])
-
-  if (status === "connected" && session) {
-    const wrong = isWrongNetwork(session.networkPassphrase)
+  if (wallet.status === "connected" && wallet.address) {
+    const wrong = isWrongNetwork(wallet.networkPassphrase)
     return (
       <div className={cn("flex items-center gap-2", className)}>
         {wrong ? (
@@ -85,14 +45,14 @@ export function WalletButton({ className }: { className?: string }) {
           <Badge variant="neutral">Testnet</Badge>
         )}
         <span className="inline-flex h-9 items-center rounded-lg border px-2.5">
-          <Hash value={session.address} head={4} tail={4} />
+          <Hash value={wallet.address} head={4} tail={4} />
         </span>
         <Button
           variant="ghost"
           size="icon-lg"
           aria-label="Disconnect wallet"
           title="Disconnect wallet"
-          onClick={disconnect}
+          onClick={() => void disconnectWallet().catch(() => {})}
         >
           <LogOut />
         </Button>
@@ -100,27 +60,28 @@ export function WalletButton({ className }: { className?: string }) {
     )
   }
 
+  const connecting = wallet.status === "connecting"
   return (
     <div className={cn("flex flex-col items-end gap-1", className)}>
       <Button
         variant="outline"
         size="lg"
-        onClick={connect}
-        disabled={status === "connecting"}
+        onClick={() => void connectWallet()}
+        disabled={connecting}
       >
-        {status === "connecting" ? (
+        {connecting ? (
           <LoaderCircle data-icon="inline-start" className="animate-spin" />
         ) : (
           <Wallet data-icon="inline-start" />
         )}
-        {status === "connecting" ? "Connecting" : "Connect wallet"}
+        {connecting ? "Connecting" : "Connect wallet"}
       </Button>
-      {error && (
+      {wallet.error && (
         <p
           role="alert"
           className="max-w-56 text-right text-xs text-destructive"
         >
-          {error}
+          {wallet.error}
         </p>
       )}
     </div>

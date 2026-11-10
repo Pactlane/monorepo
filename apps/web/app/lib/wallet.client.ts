@@ -1,13 +1,9 @@
 import { NETWORKS } from "@pactlane/core/network"
+import { getWalletState, setWalletState } from "./wallet-store"
 
 export const APP_NETWORK = NETWORKS.testnet
 
 const ADDRESS_KEY = "@StellarWalletsKit/activeAddress"
-
-export interface WalletSession {
-  address: string
-  networkPassphrase?: string
-}
 
 type Kit = typeof import("@creit.tech/stellar-wallets-kit").StellarWalletsKit
 
@@ -37,7 +33,7 @@ export function isWrongNetwork(networkPassphrase: string | undefined) {
   )
 }
 
-export function hasSavedSession() {
+function hasSavedSession() {
   try {
     return Boolean(globalThis.localStorage?.getItem(ADDRESS_KEY))
   } catch {
@@ -53,32 +49,6 @@ async function walletNetwork(kit: Kit) {
   }
 }
 
-export async function connectWallet(): Promise<WalletSession> {
-  const kit = await loadKit()
-  const { address } = await kit.authModal()
-  return { address, networkPassphrase: await walletNetwork(kit) }
-}
-
-export async function restoreWallet(): Promise<WalletSession | undefined> {
-  if (!hasSavedSession()) return undefined
-  const kit = await loadKit()
-  try {
-    const { address } = await kit.getAddress()
-    return { address, networkPassphrase: await walletNetwork(kit) }
-  } catch {
-    return undefined
-  }
-}
-
-export async function refreshNetwork(): Promise<string | undefined> {
-  return walletNetwork(await loadKit())
-}
-
-export async function disconnectWallet() {
-  const kit = await loadKit()
-  await kit.disconnect()
-}
-
 export function walletErrorMessage(error: unknown): string | undefined {
   const message =
     typeof error === "object" && error && "message" in error
@@ -86,4 +56,62 @@ export function walletErrorMessage(error: unknown): string | undefined {
       : undefined
   if (message && /clos|cancel|reject|denied/i.test(message)) return undefined
   return message ?? "Could not connect to the wallet"
+}
+
+export async function connectWallet() {
+  setWalletState({ status: "connecting" })
+  try {
+    const kit = await loadKit()
+    const { address } = await kit.authModal()
+    setWalletState({
+      status: "connected",
+      address,
+      networkPassphrase: await walletNetwork(kit),
+    })
+  } catch (error) {
+    setWalletState({ status: "idle", error: walletErrorMessage(error) })
+  }
+}
+
+export async function restoreWallet() {
+  if (!hasSavedSession() || getWalletState().status !== "idle") return
+  try {
+    const kit = await loadKit()
+    const { address } = await kit.getAddress()
+    setWalletState({
+      status: "connected",
+      address,
+      networkPassphrase: await walletNetwork(kit),
+    })
+  } catch {
+    setWalletState({ status: "idle" })
+  }
+}
+
+export async function refreshNetwork() {
+  const current = getWalletState()
+  if (current.status !== "connected") return
+  const networkPassphrase = await walletNetwork(await loadKit())
+  setWalletState({ ...getWalletState(), networkPassphrase })
+}
+
+export async function disconnectWallet() {
+  try {
+    await (await loadKit()).disconnect()
+  } finally {
+    setWalletState({ status: "idle" })
+  }
+}
+
+export async function signWithWallet(xdr: string): Promise<string> {
+  const { address, status } = getWalletState()
+  if (status !== "connected" || !address) {
+    throw new Error("Connect a wallet first")
+  }
+  const kit = await loadKit()
+  const { signedTxXdr } = await kit.signTransaction(xdr, {
+    address,
+    networkPassphrase: APP_NETWORK.passphrase,
+  })
+  return signedTxXdr
 }
