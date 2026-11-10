@@ -1,0 +1,23 @@
+{
+  "name": "@pactlane/stellar",
+  "version": "0.0.1",
+  "type": "module",
+  "private": true,
+  "exports": {
+    ".": "./src/index.ts",
+    "./testing": "./src/signer.test-only.ts"
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "test": "bun test"
+  },
+  "dependencies": {
+    "@pactlane/config": "workspace:*",
+    "@pactlane/core": "workspace:*",
+    "@stellar/stellar-sdk": "~17.4.0"
+  },
+  "devDependencies": {
+    "@types/bun": "latest",
+    "typescript": "^6.0.2"
+  }
+}

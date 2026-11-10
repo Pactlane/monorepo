@@ -1,0 +1,20 @@
+{
+  "id": "GA222IF5CAODCVDK7IAACYHQDDERQFZXF66QYIXJ7S347HC3EPWEWLWO",
+  "account_id": "GA222IF5CAODCVDK7IAACYHQDDERQFZXF66QYIXJ7S347HC3EPWEWLWO",
+  "sequence": "11334367154536449",
+  "subentry_count": 1,
+  "balances": [
+    {
+      "balance": "0.0100000",
+      "limit": "922337203685.4775807",
+      "is_authorized": true,
+      "asset_type": "credit_alphanum4",
+      "asset_code": "USDC",
+      "asset_issuer": "GBBD47IF6LWK7P7MDEVSCWR7DPUWV3NY3DTQEVFL4NAT4AQH3ZLLFLA5"
+    },
+    {
+      "balance": "2.9999900",
+      "asset_type": "native"
+    }
+  ]
+}
