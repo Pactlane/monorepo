@@ -1,9 +1,10 @@
 import { useState } from "react"
 import { NavLink, Link } from "react-router"
-import { Menu, Wallet, X } from "lucide-react"
+import { Menu, X } from "lucide-react"
 import { Button } from "@pactlane/ui/components/button"
 import { Logo } from "@pactlane/ui/components/logo"
 import { cn } from "@pactlane/ui/lib/utils"
+import { WalletButton } from "@/components/wallet-button"
 
 const NAV = [
   { to: "/explore", label: "Explore agents" },
@@ -44,15 +45,7 @@ export function SiteHeader() {
           ))}
         </nav>
         <div className="ml-auto hidden md:block">
-          <Button
-            variant="outline"
-            size="lg"
-            disabled
-            title="Wallet connection arrives with testnet integration"
-          >
-            <Wallet data-icon="inline-start" />
-            Connect wallet
-          </Button>
+          <WalletButton />
         </div>
         <Button
           variant="ghost"
@@ -77,6 +70,7 @@ export function SiteHeader() {
               {n.label}
             </Link>
           ))}
+          <WalletButton className="mt-3 items-start border-t pt-3" />
         </nav>
       )}
     </header>
