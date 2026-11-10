@@ -8,12 +8,11 @@ import {
   CardTitle,
 } from "@pactlane/ui/components/card"
 import { Hash } from "@pactlane/ui/components/hash"
+import { isStellarAddress } from "@pactlane/core/address"
 import type { Route } from "./+types/agent"
 import { deriveAgents, listJobs } from "@/lib/chain.server"
 import { JobsTable } from "@/components/jobs-table"
 import { explorerAccountUrl, formatUsdc, shortAddress } from "@/lib/format"
-
-const ADDRESS = /^[GC][A-Z2-7]{55}$/
 
 export const meta: Route.MetaFunction = ({ params }) => [
   { title: `${shortAddress(params.agentId)} · Pactlane` },
@@ -21,7 +20,7 @@ export const meta: Route.MetaFunction = ({ params }) => [
 
 export async function loader({ params }: Route.LoaderArgs) {
   const address = params.agentId
-  if (!ADDRESS.test(address)) throw data("Agent not found", { status: 404 })
+  if (!isStellarAddress(address)) throw data("Agent not found", { status: 404 })
   const jobs = (await listJobs()).filter(
     (j) =>
       j.client === address || j.provider === address || j.evaluator === address

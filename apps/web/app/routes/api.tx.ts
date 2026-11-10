@@ -1,4 +1,5 @@
 import { z } from "zod"
+import { isStellarAddress } from "@pactlane/core/address"
 import type { KernelCall } from "@pactlane/stellar"
 import type { Route } from "./+types/api.tx"
 import {
@@ -7,7 +8,9 @@ import {
   submitSigned,
 } from "@/lib/chain.server"
 
-const address = z.string().regex(/^[GC][A-Z2-7]{55}$/, "Invalid address")
+const address = z
+  .string()
+  .refine(isStellarAddress, "Invalid Stellar address or checksum")
 const id = z
   .string()
   .regex(/^[1-9]\d{0,19}$/)
