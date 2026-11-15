@@ -29,15 +29,40 @@ export function networkFromPassphrase(passphrase: string): NetworkInfo {
   return found
 }
 
+function explorerUrl(network: NetworkId, kind: string, id: string): string {
+  const value = id.trim()
+  if (!value) throw new Error(`Explorer ${kind} id must not be empty`)
+  return `${NETWORKS[network].explorerUrl}/${kind}/${encodeURIComponent(value)}`
+}
+
 export function explorerTxUrl(network: NetworkId, txHash: string): string {
-  return `${NETWORKS[network].explorerUrl}/tx/${txHash}`
+  return explorerUrl(network, "tx", txHash)
 }
 
 export function explorerContractUrl(
   network: NetworkId,
   contractId: string
 ): string {
-  return `${NETWORKS[network].explorerUrl}/contract/${contractId}`
+  return explorerUrl(network, "contract", contractId)
+}
+
+export function explorerAccountUrl(
+  network: NetworkId,
+  account: string
+): string {
+  return explorerUrl(network, "account", account)
+}
+
+export function explorerLedgerUrl(
+  network: NetworkId,
+  sequence: number | bigint
+): string {
+  const valid =
+    typeof sequence === "bigint"
+      ? sequence > 0n
+      : Number.isSafeInteger(sequence) && sequence > 0
+  if (!valid) throw new Error(`Invalid ledger sequence: ${sequence}`)
+  return explorerUrl(network, "ledger", String(sequence))
 }
 
 const AGENT_ID = /^stellar:(testnet|mainnet):([A-Z0-9]+)#(\d+)$/

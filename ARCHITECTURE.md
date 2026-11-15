@@ -15,7 +15,7 @@ Discover → Negotiate → Escrow → Deliver → Settle
 | Negotiation           | Ed25519 signed envelopes over Local / HTTP / Gensyn AXL transports | Private quotes and agreements                          |
 | Evidence              | 0G Storage (content-addressed)                                     | Task specs, deliverables, evaluation bundles           |
 | Evaluation            | Deterministic rubric + optional 0G Compute                         | Verdict produced by an authorized evaluator            |
-| Coordination          | Hono API, workers, Postgres, Valkey                                | Search, projections, retries — **never custody**       |
+| Coordination          | Hono API, workers, Postgres, Valkey                                | Search, projections, retries; **never custody**        |
 
 ## Job lifecycle
 
@@ -50,4 +50,4 @@ Contracts and generated bindings live in the sibling repository `pactlane-protoc
 1. The API cannot sign for buyers and cannot release escrow.
 2. Evaluator ≠ provider, enforced in off-chain validation and by the contract.
 3. Quotes are bound to network passphrase, contract ID, asset and nonce; replays are rejected.
-4. Storage URLs are never trusted on their own — bytes are re-hashed against commitments.
+4. Storage URLs are never trusted on their own. Bytes are re-hashed against commitments.

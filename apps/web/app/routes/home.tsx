@@ -13,19 +13,25 @@ import {
 import { buttonVariants } from "@pactlane/ui/components/button"
 import { Badge } from "@pactlane/ui/components/badge"
 import type { Route } from "./+types/home"
-import { api } from "@/lib/api.server"
-import { HeroDeal } from "@/components/hero-deal"
+import { DEPLOYMENT, listJobs } from "@/lib/chain.server"
+import { ProtocolCard } from "@/components/protocol-card"
 import { JobsTable } from "@/components/jobs-table"
 
 export async function loader() {
-  const [jobs, agents] = await Promise.all([
-    api().jobs.list(),
-    api().discover(),
-  ])
-  const names = Object.fromEntries(
-    agents.map((a) => [a.profile.agentId, a.profile.displayName])
-  )
-  return { jobs: jobs.slice(0, 4), names }
+  const jobs = await listJobs(50)
+  return {
+    jobs: jobs.slice(0, 5),
+    total: jobs.length,
+    escrowed: jobs
+      .filter((j) => j.status === "funded" || j.status === "submitted")
+      .reduce((sum, j) => sum + BigInt(j.budget), 0n)
+      .toString(),
+    deployment: {
+      kernel: DEPLOYMENT.kernel,
+      evaluationPolicy: DEPLOYMENT.evaluationPolicy,
+      token: DEPLOYMENT.token,
+    },
+  }
 }
 
 const LIFECYCLE = [
@@ -76,10 +82,10 @@ export default function Home({ loaderData }: Route.ComponentProps) {
           </p>
           <div className="mt-8 flex flex-wrap gap-3">
             <Link
-              to="/explore"
+              to="/jobs/new"
               className={buttonVariants({ size: "lg", className: "h-10 px-4" })}
             >
-              Explore agents <ArrowRight data-icon="inline-end" />
+              Create a job <ArrowRight data-icon="inline-end" />
             </Link>
             <a
               href="#how-it-works"
@@ -93,7 +99,11 @@ export default function Home({ loaderData }: Route.ComponentProps) {
             </a>
           </div>
         </div>
-        <HeroDeal />
+        <ProtocolCard
+          {...loaderData.deployment}
+          total={loaderData.total}
+          escrowed={loaderData.escrowed}
+        />
       </section>
 
       <section id="how-it-works" className="scroll-mt-20 border-y bg-card">
@@ -138,11 +148,11 @@ export default function Home({ loaderData }: Route.ComponentProps) {
             View all jobs <ArrowRight className="size-3.5" />
           </Link>
         </div>
-        <JobsTable jobs={loaderData.jobs} names={loaderData.names} />
+        <JobsTable jobs={loaderData.jobs} />
       </section>
 
       <section className="mx-auto max-w-6xl px-4 pt-20 sm:px-6">
-        <div className="grid gap-8 rounded-2xl border bg-brand-navy p-8 text-white md:grid-cols-[1fr_auto] md:items-center md:p-10">
+        <div className="grid gap-8 rounded-2xl border bg-brand-navy p-8 text-white md:grid-cols-[1fr_auto] md:items-center md:p-10 dark:border-white/10">
           <div>
             <h2 className="text-2xl font-semibold tracking-tight">
               Built for developers, not just marketplace users.
@@ -158,16 +168,20 @@ const job = await buyer.createAndFund({ task, ...offers[0], evaluatorAddress })`
           </div>
           <div className="flex flex-col gap-2 text-sm">
             {[
-              { icon: BookOpen, label: "Read docs", href: "/docs" },
+              {
+                icon: BookOpen,
+                label: "Read docs",
+                href: "https://github.com/Pactlane/monorepo#readme",
+              },
               {
                 icon: Terminal,
                 label: "Install SDK",
-                href: "https://github.com/pactlane/pactlane/tree/main/packages/sdk",
+                href: "https://github.com/Pactlane/monorepo/tree/main/packages/sdk",
               },
               {
                 icon: FileCode2,
                 label: "View contracts",
-                href: "https://github.com/pactlane/pactlane-protocol",
+                href: "https://github.com/Pactlane/pactlane-protocol",
               },
             ].map((l) => (
               <a

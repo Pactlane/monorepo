@@ -28,5 +28,5 @@ Requires Node ≥ 22.22 and Bun 1.4.
 ## Rules of thumb
 
 - Money is always integer atomic units (`bigint`), never floats.
-- Hash canonical JSON only — never `JSON.stringify` of arbitrary objects.
+- Hash canonical JSON only, never `JSON.stringify` of arbitrary objects.
 - Never mark something verified/completed unless it is chain-confirmed.

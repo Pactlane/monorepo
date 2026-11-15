@@ -1,32 +1,38 @@
 import { Link } from "react-router"
-import type { Job } from "@pactlane/core"
 import { StatusPill } from "@pactlane/ui/components/status-pill"
-import { formatUsdc } from "@/lib/format"
+import type { JobView } from "@/lib/chain.server"
+import { formatDate, formatUsdc, shortAddress } from "@/lib/format"
 
 export function JobsTable({
   jobs,
-  names,
+  empty = "No jobs on the kernel yet.",
 }: {
-  jobs: Job[]
-  names: Record<string, string>
+  jobs: JobView[]
+  empty?: React.ReactNode
 }) {
   if (!jobs.length) {
     return (
-      <p className="rounded-xl border border-dashed px-5 py-10 text-center text-sm text-muted-foreground">
-        No jobs match this view yet.
-      </p>
+      <div className="rounded-xl border border-dashed px-5 py-10 text-center text-sm text-muted-foreground">
+        {empty}
+      </div>
     )
   }
   return (
-    <div className="overflow-hidden rounded-xl border bg-card">
+    <div className="overflow-x-auto rounded-xl border bg-card">
       <table className="w-full text-sm">
         <thead className="border-b bg-muted/50 text-left text-xs text-muted-foreground">
           <tr>
             <th scope="col" className="px-5 py-2.5 font-medium">
-              Agent / service
+              Job
             </th>
             <th scope="col" className="px-5 py-2.5 font-medium">
               Status
+            </th>
+            <th
+              scope="col"
+              className="hidden px-5 py-2.5 font-medium md:table-cell"
+            >
+              Client → Provider
             </th>
             <th scope="col" className="px-5 py-2.5 text-right font-medium">
               Budget
@@ -35,7 +41,7 @@ export function JobsTable({
               scope="col"
               className="hidden px-5 py-2.5 text-right font-medium sm:table-cell"
             >
-              Evidence
+              Expires
             </th>
           </tr>
         </thead>
@@ -45,25 +51,23 @@ export function JobsTable({
               <td className="px-5 py-3">
                 <Link
                   to={`/jobs/${j.id}`}
-                  className="font-medium hover:underline focus-visible:underline focus-visible:outline-none"
+                  className="font-mono font-medium hover:underline focus-visible:underline focus-visible:outline-none"
                 >
-                  {names[j.providerAgentId] ?? "Unknown agent"}
+                  {`#${j.id}`}
                 </Link>
-                <span className="text-muted-foreground"> / {j.title}</span>
               </td>
               <td className="px-5 py-3">
                 <StatusPill status={j.status} />
               </td>
-              <td className="px-5 py-3 text-right font-mono text-xs tabular-nums">
-                {formatUsdc(j.budgetAtomic)}
+              <td className="hidden px-5 py-3 font-mono text-xs text-muted-foreground md:table-cell">
+                {shortAddress(j.client)} →{" "}
+                {j.provider ? shortAddress(j.provider) : "unassigned"}
               </td>
-              <td className="hidden px-5 py-3 text-right sm:table-cell">
-                <Link
-                  to={`/jobs/${j.id}`}
-                  className="text-xs font-medium text-primary hover:underline"
-                >
-                  View
-                </Link>
+              <td className="px-5 py-3 text-right font-mono text-xs tabular-nums">
+                {j.budget === "0" ? "not set" : formatUsdc(j.budget)}
+              </td>
+              <td className="hidden px-5 py-3 text-right font-mono text-xs text-muted-foreground sm:table-cell">
+                {formatDate(j.expiresAt)}
               </td>
             </tr>
           ))}
