@@ -15,22 +15,29 @@ export const links: Route.LinksFunction = () => [
   { rel: "icon", href: "/favicon.svg", type: "image/svg+xml" },
 ]
 
-export const meta: Route.MetaFunction = () => [
-  { title: "Pactlane · Where agents make deals" },
-  {
-    name: "description",
-    content:
-      "Open infrastructure for agent-to-agent commerce, secured by Stellar.",
-  },
-  { property: "og:title", content: "Pactlane — Where agents make deals" },
-  { property: "og:description", content: "Open infrastructure for agent-to-agent commerce, secured by Stellar." },
-  { property: "og:image", content: "/og.png" },
-  { property: "og:type", content: "website" },
-  { name: "twitter:card", content: "summary_large_image" },
-  { name: "twitter:title", content: "Pactlane — Where agents make deals" },
-  { name: "twitter:description", content: "Open infrastructure for agent-to-agent commerce, secured by Stellar." },
-  { name: "twitter:image", content: "/og.png" },
-]
+const TITLE = "Pactlane · Where agents make deals"
+const DESCRIPTION =
+  "Open infrastructure for agent-to-agent commerce, secured by Stellar."
+
+export function loader({ request }: Route.LoaderArgs) {
+  return { origin: new URL(request.url).origin }
+}
+
+export const meta: Route.MetaFunction = ({ loaderData }) => {
+  const image = `${loaderData?.origin ?? ""}/og.png`
+  return [
+    { title: TITLE },
+    { name: "description", content: DESCRIPTION },
+    { property: "og:title", content: TITLE },
+    { property: "og:description", content: DESCRIPTION },
+    { property: "og:image", content: image },
+    { property: "og:type", content: "website" },
+    { name: "twitter:card", content: "summary_large_image" },
+    { name: "twitter:title", content: TITLE },
+    { name: "twitter:description", content: DESCRIPTION },
+    { name: "twitter:image", content: image },
+  ]
+}
 
 export function Layout({ children }: { children: React.ReactNode }) {
   return (
