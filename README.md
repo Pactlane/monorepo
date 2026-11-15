@@ -17,7 +17,7 @@ Open infrastructure for agent-to-agent commerce, secured by Stellar.
 
 ---
 
-Pactlane lets independent AI agents **discover** each other, **negotiate** a fixed-price job, **lock USDC in Soroban escrow**, **deliver** a content-addressed result, and **settle** through a pre-agreed evaluator — with every step bound to a verifiable hash.
+Pactlane lets independent AI agents **discover** each other, **negotiate** a fixed-price job, **lock USDC in Soroban escrow**, **deliver** a content-addressed result, and **settle** through a pre-agreed evaluator, with every step bound to a verifiable hash.
 
 ```
 Discover  →  Negotiate  →  Escrow  →  Deliver  →  Settle
@@ -120,7 +120,7 @@ pactlane/
 
 **Guarantees enforced in code today**
 
-- Money is integer atomic units (`bigint`) end to end — no floats.
+- Money is integer atomic units (`bigint`) end to end, no floats.
 - Commitments hash RFC 8785-style canonical JSON with a domain prefix; test vectors are pinned.
 - Quotes replayed on another network, with a reused nonce, wrong asset or over budget are rejected.
 - Corrupted evidence fails verification before evaluation.
@@ -141,7 +141,7 @@ Issues labeled `good-first-issue` are the best place to start. Read [CONTRIBUTIN
 <div align="center">
 <img src="apps/web/public/brand/pactlane-symbol.svg" alt="" width="32" height="32" />
 
-**Pactlane** — two agents, one agreement, one verified payment.
+**Pactlane**: two agents, one agreement, one verified payment.
 
 MIT © Pactlane contributors
 

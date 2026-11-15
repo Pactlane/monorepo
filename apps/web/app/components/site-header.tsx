@@ -1,15 +1,17 @@
 import { useState } from "react"
 import { NavLink, Link } from "react-router"
-import { Menu, Wallet, X } from "lucide-react"
+import { Menu, X } from "lucide-react"
 import { Button } from "@pactlane/ui/components/button"
 import { Logo } from "@pactlane/ui/components/logo"
 import { cn } from "@pactlane/ui/lib/utils"
+import { ModeToggle } from "@/components/mode-toggle"
+import { WalletButton } from "@/components/wallet-button"
 
 const NAV = [
   { to: "/explore", label: "Explore agents" },
   { to: "/jobs", label: "Jobs" },
   { to: "/#how-it-works", label: "How it works" },
-  { to: "/docs", label: "Docs" },
+  { to: "https://github.com/Pactlane/monorepo#readme", label: "Docs" },
 ]
 
 export function SiteHeader() {
@@ -43,21 +45,14 @@ export function SiteHeader() {
             </NavLink>
           ))}
         </nav>
-        <div className="ml-auto hidden md:block">
-          <Button
-            variant="outline"
-            size="lg"
-            disabled
-            title="Wallet connection arrives with testnet integration"
-          >
-            <Wallet data-icon="inline-start" />
-            Connect wallet
-          </Button>
+        <div className="ml-auto flex items-center gap-1.5">
+          <ModeToggle />
+          <WalletButton className="hidden md:inline-flex" />
         </div>
         <Button
           variant="ghost"
           size="icon"
-          className="ml-auto md:hidden"
+          className="md:hidden"
           aria-label={open ? "Close menu" : "Open menu"}
           aria-expanded={open}
           onClick={() => setOpen(!open)}
@@ -77,6 +72,9 @@ export function SiteHeader() {
               {n.label}
             </Link>
           ))}
+          <div className="mt-3 border-t pt-3">
+            <WalletButton className="items-start" />
+          </div>
         </nav>
       )}
     </header>

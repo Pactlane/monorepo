@@ -2,10 +2,17 @@ import { formatUsdc } from "@pactlane/core/money"
 import {
   explorerTxUrl,
   explorerContractUrl,
+  explorerAccountUrl,
   type NetworkId,
 } from "@pactlane/core/network"
 
-export { formatUsdc, explorerTxUrl, explorerContractUrl, type NetworkId }
+export {
+  formatUsdc,
+  explorerTxUrl,
+  explorerContractUrl,
+  explorerAccountUrl,
+  type NetworkId,
+}
 
 export function agentIndex(agentId: string) {
   return `#${agentId.split("#")[1] ?? "?"}`
