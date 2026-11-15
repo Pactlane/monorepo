@@ -44,6 +44,7 @@ The database is a _projection_ of chain events. If a worker crashes, it reconcil
 | `@pactlane/test-utils`  | Deterministic fixtures                                               |
 
 Contracts and generated bindings live in the sibling repository `pactlane-protocol`.
+How job actions map onto ERC-8183 is in [content/protocol/erc-8183-mapping.md](content/protocol/erc-8183-mapping.md).
 
 ## Trust boundaries
 

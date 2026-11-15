@@ -1,0 +1,25 @@
+{
+  "name": "@pactlane/contracts",
+  "version": "0.0.1",
+  "type": "module",
+  "private": true,
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "test": "bun test",
+    "validate-manifest": "bun bin/validate-manifest.ts"
+  },
+  "dependencies": {
+    "@pactlane/config": "workspace:*",
+    "@pactlane/core": "workspace:*",
+    "@pactlane/stellar": "workspace:*",
+    "@stellar/stellar-sdk": "~17.4.0",
+    "zod": "^4.6.5"
+  },
+  "devDependencies": {
+    "@types/bun": "latest",
+    "typescript": "^6.0.2"
+  }
+}

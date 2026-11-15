@@ -1,0 +1,18 @@
+{
+  "entries": [
+    {
+      "sdk": "0.0.x",
+      "contracts": {
+        "pactlane-commerce": [
+          "5ebc01577b1b69cb23c1094777d349553436e8f28452af13c87d8b9e675c5f06"
+        ],
+        "pactlane-evaluation-policy": [
+          "956b15980a05fd4f276073a47a2b851ebbbb0ae4a19500d38fd91a659895f13f"
+        ]
+      }
+    }
+  ],
+  "unsupported": {
+    "fa5f3356d5e26db85bb34dbbc51a5eb00a1003572208c922f831388dd9eb339e": "First testnet kernel build; it has no get_jobs, which job listing needs"
+  }
+}
